@@ -27,9 +27,10 @@ public class JavaFXMLApplication extends Application {
         //     - configuracion del stage
         //     - se muestra el stage de manera no modal mediante el metodo show()
         
-        stage.setMaximized(true);
-        stage.setResizable(false);
-        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setMaximized(true); // El tamaño de la ventana se ajusta automáticamente a la pantalla del usuario
+        stage.setResizable(false); // No se puede cambiar el tamaño de la pestaña
+        stage.initStyle(StageStyle.TRANSPARENT); // Pantalla completa (hay q añadir el botón de cerrar a mano)
+        
         stage.setScene(scene);
         stage.show();
     }
