@@ -31,6 +31,10 @@ public class FXMLSignUpController implements Initializable {
     private Button bCancel;
 
     private BooleanBinding fieldsValid;
+    @FXML
+    private Button bforgot;
+    @FXML
+    private Button bsignup;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
