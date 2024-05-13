@@ -77,13 +77,11 @@ public class FXMLRegisterController implements Initializable {
 
         // Verificar campos al dar clic en Aceptar
         bAcceptR.setOnAction((event) -> {
-            if(!checkFields()) { clearFields(); }
-            else if(register()){
+            if(checkFields() && register()){
                 try {
                 // Cargar la ventana del segundo proyecto
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLSignUp.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLLogin.fxml"));
                 Parent root = loader.load();
-
                 // Configurar la escena
                 Scene scene = new Scene(root);
 
@@ -112,12 +110,14 @@ public class FXMLRegisterController implements Initializable {
         boolean passwordValid = Utils.checkPassword(bPassword.getText());
 
         if (!emailValid) {
+            bEmail.clear();
             manageError(iniEmail, bEmail);
         } else {
             manageCorrect(iniEmail, bEmail);
         }
 
         if (!passwordValid) {
+            bPassword.clear();
             manageError(iniPassword, bPassword);
         } else {
             manageCorrect(iniPassword, bPassword);
@@ -135,18 +135,18 @@ public class FXMLRegisterController implements Initializable {
     }
     
     private void clearFields() {
-        bPassword.clear();
+        bEmail.clear();
         bUsername.clear();
         bName.clear();
         bSurname.clear();
-        bEmail.clear();
+        bPassword.clear();
     }
     
     private boolean register(){
         boolean registered = false;
         try {
             LocalDate fechaRegistro = LocalDate.now();
-            Image profileImage = new Image("../icons/profile.png");
+            Image profileImage = new Image("/icons/profile.png");
             registered = Acount.getInstance().registerUser(bName.getText(), bSurname.getText(), bEmail.getText(),bUsername.getText(), bPassword.getText(),profileImage,fechaRegistro);
         } catch (AcountDAOException | IOException ex) { manageError(iniRegisterError, bPassword); }
         finally{

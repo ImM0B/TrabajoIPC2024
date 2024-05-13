@@ -255,7 +255,7 @@
                               <Insets />
                            </VBox.margin>
                         </HBox>
-                        <Label fx:id="iniRegisterError" text="Register failed" textFill="#ca0505" visible="false">
+                        <Label fx:id="iniRegisterError" text="Register failed ! Already Registered?" textFill="#ca0505" visible="false">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>

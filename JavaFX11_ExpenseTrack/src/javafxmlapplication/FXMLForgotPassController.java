@@ -126,53 +126,53 @@ public class FXMLForgotPassController implements Initializable {
          * @param recipientEmail
          * @param newPassword
          */
-    //public void sendPasswordRecoveryEmail(String recipientEmail, String newPassword) {
+   public void sendPasswordRecoveryEmail(String recipientEmail, String newPassword) {
         // Configura las propiedades del sistema para SMTP
-        //Properties properties = new Properties();
-        //properties.put("mail.smtp.host", "smtp.gmail.com"); // Cambia esto al host SMTP de tu proveedor de correo electrónico
-        //properties.put("mail.smtp.port", "587"); // Puerto SMTP (generalmente 587 para TLS)
-        //properties.put("mail.smtp.auth", "true"); // Autenticación requerida
-        //properties.put("mail.smtp.starttls.enable", "true"); // Habilitar TLS
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com"); // Cambia esto al host SMTP de tu proveedor de correo electrónico
+        properties.put("mail.smtp.port", "587"); // Puerto SMTP (generalmente 587 para TLS)
+        properties.put("mail.smtp.auth", "true"); // Autenticación requerida
+        properties.put("mail.smtp.starttls.enable", "true"); // Habilitar TLS
 
         // Configura la autenticación del servidor de correo
-        //Authenticator auth = new Authenticator() {
-        //    @Override
-        //    protected PasswordAuthentication getPasswordAuthentication() {
-        //        return new PasswordAuthentication("expensetrack0@gmail.com", "vjgn ysmb rapg prul");
-        //    }
-        //};
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("expensetrack0@gmail.com", "vjgn ysmb rapg prul");
+            }
+        };
 
-        // Crea una nueva sesión de correo
-        //Session session = Session.getInstance(properties, auth);
+        //Crea una nueva sesión de correo
+        Session session = Session.getInstance(properties, auth);
 
-        //try {
+        try {
             // Crea un mensaje de correo electrónico
-        //    MimeMessage message = new MimeMessage(session);
-        //    message.setFrom(new InternetAddress("expensetrack0@gmail.com"));
-        //    message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
-        //    message.setSubject("Recuperación de contraseña");
-        //    message.setText("Tu nueva contraseña es: " + newPassword);
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("expensetrack0@gmail.com"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
+            message.setSubject("Recuperación de contraseña");
+            message.setText("Tu nueva contraseña es: " + newPassword);
 
             // Envía el mensaje de correo electrónico
-        //    Transport.send(message);
-        //    System.out.println("Correo electrónico de recuperación de contraseña enviado exitosamente.");
-        //} catch (MessagingException ex) {
-        //    System.out.println("Error al enviar el correo electrónico. " + ex);
-        //}
-    //}
+            Transport.send(message);
+            System.out.println("Correo electrónico de recuperación de contraseña enviado exitosamente.");
+        } catch (MessagingException ex) {
+            System.out.println("Error al enviar el correo electrónico. " + ex);
+        }
+    }
 
-    //private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    //private static final int PASSWORD_LENGTH = 10;
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final int PASSWORD_LENGTH = 10;
 
-    //public static String generateNewPassword() {
-    //    SecureRandom random = new SecureRandom();
-    //    StringBuilder newPassword = new StringBuilder(PASSWORD_LENGTH);
+    public static String generateNewPassword() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder newPassword = new StringBuilder(PASSWORD_LENGTH);
         
-    //    for (int i = 0; i < PASSWORD_LENGTH; i++) {
-    //        int randomIndex = random.nextInt(CHARACTERS.length());
-    //        newPassword.append(CHARACTERS.charAt(randomIndex));
-    //    }
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            newPassword.append(CHARACTERS.charAt(randomIndex));
+        }
         
-    //    return newPassword.toString();
-    //}
+        return newPassword.toString();
+    }
 }
