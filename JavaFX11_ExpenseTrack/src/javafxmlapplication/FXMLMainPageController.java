@@ -25,6 +25,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Acount;
+import model.AcountDAOException;
+import model.Category;
 
 /**
  * FXML Controller class
@@ -101,27 +104,11 @@ public class FXMLMainPageController implements Initializable {
         });
               
         
-        //NO FUNCIONA. PENDIENTE DE REVISAR
-        sCategory.setOnAction((event) -> {
+        sCategory.setOnAction ((event) -> {  
             
-            MenuButton seleccion = (MenuButton) event.getSource();
-            String selectedOption = seleccion.getText();
-            cCategory.setText(selectedOption);            
-        }); 
-                
+            cCategory.textProperty().bind(categoryList.getSelectionModel().selectedItemProperty()); //ERROR
+        });
         
-        //SELECTION MODEL TAMPOCO FUNCIONA PORQUE sCategory NO ES UNA LISTVIEW. PENDIENTE DE REVISAR
-        /*sCategory.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            // Verificar si la selección es un MenuItem
-            if (newValue instanceof MenuButton) {
-                MenuButton selectedItem = (MenuButton) newValue;
-                // Obtener el texto del MenuItem y actualizar cCategory
-                cCategory.setText(selectedItem.getText());
-            }
-        });*/
-
-        //cCategory.textProperty().bind(sCategory.getItems());
-        //PARECE QUE SI SE PUEDE HACER CON MENUITEM YA QUE LAS OPCIONES SON ITEMS. PERO CON MENUBUTTON NO PORQUE LAS OPCIONES SON BOTONES/ACCIONES, NO ELEMENTOS DE TEXTO NI ITEMS.
         
     }
     
@@ -171,19 +158,22 @@ public class FXMLMainPageController implements Initializable {
     }
 
 
-    //LISTA DE CATEGORIAS DE EJEMPLO (FALTA BASE DE DATOS)
+    /*//LISTA DE CATEGORIAS DE EJEMPLO 
     public static List<String> obtenerListaDeCategorias() {
         // Aquí defines cómo obtendrás la lista de categorías, por ejemplo, desde una base de datos o un archivo
-        List<String> categoryList = new ArrayList<>();
+        List<String> arrayCategorias = new ArrayList<>();
         // Agrega categorías de ejemplo
-        categoryList.add("Category 1");
-        categoryList.add("Category 2");
-        categoryList.add("Category 3");
-        return categoryList;
-    }
-
+        arrayCategorias.add("Category 1");
+        arrayCategorias.add("Category 2");
+        arrayCategorias.add("Category 3");
+        return arrayCategorias;
+    }*/
+    
+    
+    
     // Lista que contiene las categorías disponibles
-    List<String> categoryList = obtenerListaDeCategorias(); // Definir todavía cómo obtener esta listasegún se añadan en la pantalla de añadir categoria. Habrá que hacer en obtenerListaDeCategorias que reciba atributos del tipo string y los introduzca en un string. Pasar entonces el metodo por añadir categoria
+    List<Category> categoryList = Acount.getInstance().getUserCategories();  //ERROR
+    
     public void MenuCategorias() {
         
         // Limpiar items existentes en MenuButton al inicio
@@ -195,14 +185,15 @@ public class FXMLMainPageController implements Initializable {
             sCategory.getItems().add(noCategoriesItem);
         } else {
             
-            // Si hay categorías, agregamos un MenuItem para cada una de ellas
-            for (String category : categoryList) {
-                MenuItem categoryItem = new MenuItem(category);
-                sCategory.getItems().add(categoryItem);
+            // Si hay categorías, creamos un MenuItem por cada una de ellas
+            for (Category category : categoryList) {
+                MenuItem categoryItem = new MenuItem(category.getName());
+                sCategory.getItems().addAll(categoryItem);
             }
               
         }
-    }    
+    }
+
 
 
     @FXML
@@ -226,5 +217,15 @@ public class FXMLMainPageController implements Initializable {
             stage.show();
         } catch (IOException e) {}
     }
-           
+       
+    
 }
+    
+    
+    
+    
+    
+    
+    
+    
+
