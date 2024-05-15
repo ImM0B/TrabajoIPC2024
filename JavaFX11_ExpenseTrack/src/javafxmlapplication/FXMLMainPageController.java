@@ -158,7 +158,7 @@ public class FXMLMainPageController implements Initializable {
     }
 
 
-    /*//LISTA DE CATEGORIAS DE EJEMPLO 
+   /* //LISTA DE CATEGORIAS DE EJEMPLO 
     public static List<String> obtenerListaDeCategorias() {
         // Aquí defines cómo obtendrás la lista de categorías, por ejemplo, desde una base de datos o un archivo
         List<String> arrayCategorias = new ArrayList<>();
@@ -172,7 +172,7 @@ public class FXMLMainPageController implements Initializable {
     
     
     // Lista que contiene las categorías disponibles
-    List<Category> categoryList = Acount.getInstance().getUserCategories();  //ERROR
+    List<Category> categoryList = Acount.getInstance().getUserCategories();     //ERROR
     
     public void MenuCategorias() {
         
