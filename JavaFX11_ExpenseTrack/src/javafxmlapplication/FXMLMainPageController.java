@@ -4,6 +4,8 @@
  */
 package javafxmlapplication;
 
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -26,9 +28,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -41,6 +46,10 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -65,12 +74,12 @@ public class FXMLMainPageController implements Initializable {
     private HBox topHBox;
     @FXML
     private StackPane topStackPane;
-    
+
     private boolean spOpen = false;
     private boolean vBoxECOpen = false;
     private boolean vBoxProfOpen = false;
     private boolean vBoxAdderOpen = false;
-    
+
     //MENÚ
     @FXML
     private Button editCategories;
@@ -78,7 +87,7 @@ public class FXMLMainPageController implements Initializable {
     private Button print;
     @FXML
     private Button editProfile;
-    
+
     //GASTOS
     @FXML
     private CheckBox selectAll;
@@ -86,9 +95,9 @@ public class FXMLMainPageController implements Initializable {
     private Button editAdder;
     @FXML
     private ListView<Charge> listViewCharges;
-    
+
     private ObservableList<Charge> charges = FXCollections.observableArrayList();
-    
+
     //EDITAR CATEGORÍA
     @FXML
     private VBox vBoxEC;
@@ -112,9 +121,9 @@ public class FXMLMainPageController implements Initializable {
     private Button cAdd1; //Add interior
     @FXML
     private Button cCancel;
-    
+
     private ObservableList<Category> categories = FXCollections.observableArrayList();
-    
+
     //PERFIL
     @FXML
     private ImageView pImage;
@@ -140,7 +149,7 @@ public class FXMLMainPageController implements Initializable {
     private Button pConfChanges;
     @FXML
     private Button pCancel;
-    
+
     //AÑADIR GASTO
     @FXML
     private VBox vBoxAdder;
@@ -164,9 +173,11 @@ public class FXMLMainPageController implements Initializable {
     private DatePicker aDate;
     @FXML
     private Button aImage;
-    
-    
-    
+    @FXML
+    private Button pImageButton;
+
+
+
 
     /**
      * Initializes the controller class.
@@ -181,39 +192,54 @@ public class FXMLMainPageController implements Initializable {
         });
         // Cargar la imagen
         Image image = new Image(getClass().getResourceAsStream("../icons/bg_mainPage.png"));
-        
+
         // Establecer el fondo en el HBox
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         topHBox.setBackground(new Background(backgroundImage));
-        
+
         // EditCategory button
         editCategories.setOnAction((event) -> {
             if (!vBoxECOpen) { openEditCategory(); }
         });
-        
+
         // Profile button
         editProfile.setOnAction((event) -> {
-            if (!vBoxProfOpen) { openProfile(); }
+            if (!vBoxProfOpen) { openProfile();
+
+}
         });
-        
+
         // Expense adder button
         editAdder.setOnAction((event) -> {
             if (!vBoxAdderOpen) { openExpenseAdder(); }
         });
-              
+
         //---------------------------CATEGORÍA----------------------------
         // Cargar categorías existentes desde la base de datos o donde sea que las obtengas
         loadCategories();
-        
+
         // Configurar el selector de categorías
         configureCategorySelector();
+
+
+
+
+            //----------------------------PERFIL-----------------------------
+
+        try {            
+            pUser.setText("@" + Acount.getInstance().getLoggedUser().getNickName()); //@UsuarioActual
+        } catch (AcountDAOException | IOException ex) {}
         
+        pImageButton.setOnAction((event) -> {
+            handleImageClick(event);
+        });
         
-        
-        //----------------------------PERFIL-----------------------------
-        
-        
-        
+
+
+
+
+
+
         //----------------------------GASTOS-----------------------------
         listViewCharges.setItems(charges);
         listViewCharges.setCellFactory(CheckBoxListCell.forListView(new Callback<Charge, ObservableValue<Boolean>>() {
@@ -222,14 +248,14 @@ public class FXMLMainPageController implements Initializable {
                 return new SimpleBooleanProperty();
             }
         }));
-        
+
         selectAll.setOnAction(event -> selectAllCharges());
-        
+
         aAdd.setOnAction(event -> addCharge());
         aCancel.setOnAction(event -> clearAdderFields());
-        
+
     } //--------------------------FIN INICIALIZADOR-----------------------------
-    
+
     //CERRAR TODAS LAS PESTAÑAS DE LA DERECHA
     public void closeRightStackPane() {
         rightStackPane.setPrefWidth(0);
@@ -241,7 +267,7 @@ public class FXMLMainPageController implements Initializable {
         vBoxProfOpen = false;
         vBoxAdderOpen = false;
     }
-    
+
     //ABRIR PESTAÑAS DE LA DERECHA
     private void openEditCategory() {
         closeRightStackPane(); 
@@ -250,7 +276,7 @@ public class FXMLMainPageController implements Initializable {
         spOpen = true;
         vBoxECOpen = true;
     }
-    
+
     private void openProfile() {
         closeRightStackPane(); 
         rightStackPane.setPrefWidth(600);
@@ -258,7 +284,7 @@ public class FXMLMainPageController implements Initializable {
         spOpen = true;
         vBoxProfOpen = true;
     }
-    
+
     private void openExpenseAdder() {
         closeRightStackPane(); 
         rightStackPane.setPrefWidth(600);
@@ -266,7 +292,7 @@ public class FXMLMainPageController implements Initializable {
         spOpen = true;
         vBoxAdderOpen = true;
     }
-    
+
     @FXML
     public void cancelStackPaneButtonAction(ActionEvent event) {
         closeRightStackPane();
@@ -276,9 +302,9 @@ public class FXMLMainPageController implements Initializable {
     public StackPane getRightStackPane() {
         return rightStackPane;
     }
-    
+
     //----------------------------EDITAR CATEGORÍAS-----------------------------
-    
+
     @FXML
     public void handleMenuButtonAction(ActionEvent event) {
         MenuButton menuButton = (MenuButton) event.getSource();
@@ -288,13 +314,13 @@ public class FXMLMainPageController implements Initializable {
 
     private void loadCategories() {
         // Aquí deberías cargar las categorías existentes desde la base de datos o cualquier otra fuente de datos
-        
+
     }
-    
+
     private void configureCategorySelector() {
         // Limpiar las opciones actuales del selector
         sCategory.getItems().clear();
-        
+
         // Crear una opción para cada categoría existente
         for (Category category : categories) {
             MenuItem menuItem = new MenuItem(category.getName());
@@ -303,18 +329,18 @@ public class FXMLMainPageController implements Initializable {
             });
             sCategory.getItems().add(menuItem);
         }
-        
+
         // Si no hay categorías, agregar una opción predeterminada
         if (categories.isEmpty()) {
             MenuItem newItem = new MenuItem("New Category");
             newItem.setOnAction(event -> showNewCategoryDialog());
             sCategory.getItems().add(newItem);
         }
-        
+
         // Configurar el botón de eliminar
         cDelete.setDisable(true); // Inicialmente deshabilitado
     }
-   
+
     private void handleDeleteButtonAction(ActionEvent event) {
         String categoryName = cCategory.getText();
         if (!categoryName.equals("None")) {
@@ -324,11 +350,11 @@ public class FXMLMainPageController implements Initializable {
             alert.setHeaderText("Delete Category");
             alert.setContentText("Are you sure you want to delete the selected category?");
             alert.initModality(Modality.APPLICATION_MODAL);
-            
+
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
             stage.setAlwaysOnTop(true);
             stage.toFront();
-            
+
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     // Eliminar la categoría
@@ -339,22 +365,22 @@ public class FXMLMainPageController implements Initializable {
             });
         }
     }
-    
+
     private void handleAddButtonAction(ActionEvent event) {
         showNewCategoryDialog();
     }
-    
+
     private void handleCancelButtonAction(ActionEvent event) {
         vBoxNewCategory.setVisible(false);
         vBoxNewCategory.setManaged(false);
         nombreCat.clear();
         cCategory.setText("None");
     }
-    
+
     private void showNewCategoryDialog() {
         vBoxNewCategory.setVisible(true);
         vBoxNewCategory.setManaged(true);
-        
+
         // Configurar el campo de texto de nombre de categoría
         nombreCat.setTextFormatter(new TextFormatter<>((Change c) -> {
             if (c.isAdded()) {
@@ -365,17 +391,17 @@ public class FXMLMainPageController implements Initializable {
             }
             return c;
         }));
-        
+
         // Configurar el botón de agregar
         cAdd1.setDisable(true); // Deshabilitado inicialmente
-        
+
         // Enfocar el campo de texto de nombre de categoría
         nombreCat.requestFocus();
     }
 
     private void handleAddCategoryAction(ActionEvent event) {
         String categoryName = nombreCat.getText().trim();
-        
+
         if (!categoryName.isEmpty()) {
             // Verificar si la categoría ya existe
             if (categories.stream().anyMatch(category -> category.getName().equalsIgnoreCase(categoryName))) {
@@ -385,15 +411,15 @@ public class FXMLMainPageController implements Initializable {
                 alert.setHeaderText("Category Already Exists");
                 alert.setContentText("A category with the same name already exists.");
                 alert.initModality(Modality.APPLICATION_MODAL);
-                
+
                 Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
                 stage.setAlwaysOnTop(true);
                 stage.toFront();
-                
+
                 alert.showAndWait();
             } else {
                 // Agregar la nueva categoría
-                
+
                 configureCategorySelector(); // Actualizar el selector de categorías
                 cCategory.setText(categoryName); // Establecer la nueva categoría como la actual
                 handleCancelButtonAction(null); // Ocultar el VBox de nueva categoría y limpiar el campo de texto
@@ -405,29 +431,48 @@ public class FXMLMainPageController implements Initializable {
             alert.setHeaderText("Empty Category Name");
             alert.setContentText("Please enter a name for the category.");
             alert.initModality(Modality.APPLICATION_MODAL);
-            
+
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
             stage.setAlwaysOnTop(true);
             stage.toFront();
-            
+
             alert.showAndWait();
         }
     }
 
     //----------------------------------PERFIL----------------------------------
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+    public void handleImageClick(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Image");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        // Muestra el cuadro de diálogo de selección de archivo
+        File file = fileChooser.showOpenDialog(new Stage());
+
+        if (file != null) {
+            Image image = new Image(file.toURI().toString());
+            pImage.setImage(image);
+        } else {
+            System.out.println("File selection cancelled.");
+        }
+        //Utils.circularCutout(pImage);
+
+    }
+
+
+
+
+
+
+
+
+
     //-------------------------------AÑADIR GASTO-------------------------------
-    
+
     private void clearAdderFields() {
         aName.clear();
         aCost.clear();
@@ -468,18 +513,18 @@ public class FXMLMainPageController implements Initializable {
         clearAdderFields();
         aExpAdded.setText("Expense added successfully!");
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
     //------------------------------GESTIÓN GASTOS------------------------------
-    
+
     public void addCharge(Charge charge) {
         charges.add(charge);
     }
@@ -494,22 +539,13 @@ public class FXMLMainPageController implements Initializable {
             checkBox.setSelected(true);
         }
     }
-    
-    
+
+
     @FXML
     private void NewCategoryButtonAction(ActionEvent event) {
     }
 
-    
-       
-    
-}
-    
-    
-    
-    
-    
-    
-    
-    
 
+
+
+}
