@@ -215,17 +215,25 @@ public class FXMLMainPageController implements Initializable {
         });
 
         //---------------------------CATEGORÍA----------------------------
+        vBoxNewCategory.setVisible(false);
+        vBoxNewCategory.setManaged(false);
+        
         // Cargar categorías existentes desde la base de datos o donde sea que las obtengas
         loadCategories();
 
         // Configurar el selector de categorías
         configureCategorySelector();
 
+        cAdd.setOnAction((event) -> {
+            showNewCategoryDialog();
+        });
+        
+        cCancel.setOnAction((event) -> {
+            handleCancelButtonAction(event);
+        });
 
 
-
-            //----------------------------PERFIL-----------------------------
-
+        //----------------------------PERFIL-----------------------------         
         try {            
             pUser.setText("@" + Acount.getInstance().getLoggedUser().getNickName()); //@UsuarioActual
         } catch (AcountDAOException | IOException ex) {}
@@ -303,6 +311,9 @@ public class FXMLMainPageController implements Initializable {
         return rightStackPane;
     }
 
+    
+    
+    
     //----------------------------EDITAR CATEGORÍAS-----------------------------
 
     @FXML
@@ -364,10 +375,6 @@ public class FXMLMainPageController implements Initializable {
                 }
             });
         }
-    }
-
-    private void handleAddButtonAction(ActionEvent event) {
-        showNewCategoryDialog();
     }
 
     private void handleCancelButtonAction(ActionEvent event) {
@@ -440,8 +447,10 @@ public class FXMLMainPageController implements Initializable {
         }
     }
 
+    
+    
+    
     //----------------------------------PERFIL----------------------------------
-
 
     public void handleImageClick(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
