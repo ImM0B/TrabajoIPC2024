@@ -40,10 +40,6 @@ public class FXMLLoginController implements Initializable {
     @FXML
     private Label iniPassword;
     @FXML
-    private PasswordField bPassword2;
-    @FXML
-    private Label iniPassword2;
-    @FXML
     private Label iniLoginIncorrect;
     @FXML
     private Button bAccept;
@@ -55,15 +51,12 @@ public class FXMLLoginController implements Initializable {
     private VBox midVBox;
     @FXML
     private Label iniUsername;
-    @FXML
-    private Button bforgot;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Deshabilitar el botón de aceptar si algún campo está vacío
         fieldsValid = bUsername.textProperty().isNotEmpty()
-                .and(bPassword.textProperty().isNotEmpty())
-                .and(bPassword2.textProperty().isNotEmpty());
+                .and(bPassword.textProperty().isNotEmpty());
 
         bAccept.disableProperty().bind(fieldsValid.not());
         
@@ -129,21 +122,14 @@ public class FXMLLoginController implements Initializable {
 
     private boolean checkFields() {
         boolean passwordValid = Utils.checkPassword(bPassword.getText());
-        boolean passwordsMatch = bPassword.getText().equals(bPassword2.getText());
 
         if (!passwordValid) {
             manageError(iniPassword, bPassword);
         } else {
             manageCorrect(iniPassword, bPassword);
         }
-
-        if (!passwordsMatch) {
-            manageError(iniPassword2, bPassword2);
-        } else {
-            manageCorrect(iniPassword2, bPassword2);
-        }
-
-        return passwordValid && passwordsMatch;
+        
+        return passwordValid;
     }
 
     private void manageError(Label errorLabel, TextField textField) {
@@ -156,18 +142,17 @@ public class FXMLLoginController implements Initializable {
     
     private void clearPasswordFields() {
         bPassword.clear();
-        bPassword2.clear();
     }
     
     private boolean loggedIn() {
         boolean login = false;
         try {
             login = Acount.getInstance().logInUserByCredentials(bUsername.getText(), bPassword.getText());
-        } catch(AcountDAOException | IOException ex) { manageError(iniLoginIncorrect, bPassword2); }
+        } catch(AcountDAOException | IOException ex) { manageError(iniLoginIncorrect, bPassword); }
         finally {
             if(!login) {
-                manageError(iniLoginIncorrect, bPassword2);
                 clearPasswordFields();
+                manageError(iniLoginIncorrect, bPassword);
             }
         }    
         return login;
@@ -220,6 +205,7 @@ public class FXMLLoginController implements Initializable {
     } catch (IOException e) {}
     }
     
+    @FXML
     public void forgotButtonAction(ActionEvent event) {
     try {
         // Cargar la ventana del segundo proyecto

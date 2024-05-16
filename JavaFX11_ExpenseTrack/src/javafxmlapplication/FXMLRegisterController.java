@@ -59,6 +59,10 @@ public class FXMLRegisterController implements Initializable {
     private Button blogin;
     @FXML
     private VBox midVBoxR;
+    @FXML
+    private PasswordField bPassword2;
+    @FXML
+    private Label iniPassword2;
     
 
     @Override
@@ -66,7 +70,8 @@ public class FXMLRegisterController implements Initializable {
         // Deshabilitar el botón de aceptar si algún campo está vacío
         fieldsValid = bEmail.textProperty().isNotEmpty()
                 .and(bPassword.textProperty().isNotEmpty())
-                .and(bUsername.textProperty().isNotEmpty());
+                .and(bUsername.textProperty().isNotEmpty())
+                .and(bPassword2.textProperty().isNotEmpty());
 
         bAcceptR.disableProperty().bind(fieldsValid.not());
 
@@ -108,6 +113,7 @@ public class FXMLRegisterController implements Initializable {
     private boolean checkFields() {
         boolean emailValid = Utils.checkEmail(bEmail.getText());
         boolean passwordValid = Utils.checkPassword(bPassword.getText());
+        boolean passwordsMatch = bPassword.getText().equals(bPassword2.getText());
 
         if (!emailValid) {
             bEmail.clear();
@@ -123,7 +129,13 @@ public class FXMLRegisterController implements Initializable {
             manageCorrect(iniPassword, bPassword);
         }
         
-        return emailValid && passwordValid;
+        if (!passwordsMatch) {
+            manageError(iniPassword2, bPassword2);
+        } else {
+            manageCorrect(iniPassword2, bPassword2);
+        }
+        
+        return emailValid && passwordValid && passwordsMatch;
     }
 
     private void manageError(Label errorLabel, TextField textField) {
@@ -135,11 +147,8 @@ public class FXMLRegisterController implements Initializable {
     }
     
     private void clearFields() {
-        bEmail.clear();
-        bUsername.clear();
-        bName.clear();
-        bSurname.clear();
         bPassword.clear();
+        bPassword2.clear();
     }
     
     private boolean register(){

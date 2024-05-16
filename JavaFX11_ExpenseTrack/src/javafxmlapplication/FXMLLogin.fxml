@@ -102,7 +102,7 @@
                         <Insets bottom="50.0" />
                      </VBox.margin>
                   </HBox>
-                  <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="550.0" prefWidth="450.0" style="-fx-background-color: #303030; -fx-background-radius: 30; -fx-border-color: #a30000; -fx-border-radius: 30; -fx-border-width: 2;">
+                  <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="435.0" prefWidth="450.0" style="-fx-background-color: #303030; -fx-background-radius: 30; -fx-border-color: #a30000; -fx-border-radius: 30; -fx-border-width: 2;">
                      <children>
                         <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Login">
                            <font>
@@ -162,26 +162,9 @@
                               <Insets />
                            </VBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="80.0" prefWidth="200.0">
+                        <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="75.0" prefWidth="446.0">
                            <children>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                                 <children>
-                                    <PasswordField fx:id="bPassword2" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Repeat Password" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                       <font>
-                                          <Font name="Calibri Italic" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                       </cursor>
-                                    </PasswordField>
-                                    <Label fx:id="iniPassword2" text="Password don't match" textFill="#ca0505" visible="false" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="100.0" prefWidth="200.0">
-                           <children>
-                              <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
+                              <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="75.0" prefWidth="200.0">
                                  <children>
                                     <Button fx:id="bAccept" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: #a30000; -fx-background-radius: 10;" text="LOGIN" textFill="WHITE">
                                        <font>
@@ -191,9 +174,14 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </Button>
-                                    <Button fx:id="bforgot" alignment="CENTER" mnemonicParsing="false" onAction="#forgotButtonAction" style="-fx-background-color: #303030;" text="Forgot your password?" textFill="#9e9e9e">
+                                    <Label fx:id="iniLoginIncorrect" text="Username/Password incorrect" textFill="#ca0505" visible="false">
                                        <VBox.margin>
                                           <Insets top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <Button alignment="CENTER" mnemonicParsing="false" onAction="#forgotButtonAction" style="-fx-background-color: #303030;" text="Forgot your password?" textFill="#9e9e9e">
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
                                        </VBox.margin>
                                        <font>
                                           <Font name="Ebrima" size="14.0" />
@@ -206,10 +194,9 @@
                               </VBox>
                            </children>
                            <VBox.margin>
-                              <Insets top="10.0" />
+                              <Insets bottom="25.0" top="10.0" />
                            </VBox.margin>
                         </HBox>
-                        <Label fx:id="iniLoginIncorrect" text="Username/Password incorrect" textFill="#ca0505" visible="false" />
                      </children>
                   </VBox>
                   <HBox prefHeight="73.0" prefWidth="200.0">
