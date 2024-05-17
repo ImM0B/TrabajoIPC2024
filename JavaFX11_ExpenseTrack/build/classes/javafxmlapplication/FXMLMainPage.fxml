@@ -31,7 +31,7 @@
                      <children>
                         <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="50.0" prefWidth="200.0">
                            <children>
-                              <CheckBox fx:id="selectAll" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: 0;">
+                              <CheckBox fx:id="selectAll" mnemonicParsing="false" prefHeight="16.0" prefWidth="16.0">
                                  <HBox.margin>
                                     <Insets left="10.0" right="15.0" />
                                  </HBox.margin>
@@ -120,7 +120,7 @@
                         </HBox>
                      </children>
                   </HBox>
-                  <ListView fx:id="gastosListView" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #373737;" VBox.vgrow="ALWAYS" />
+                  <ListView fx:id="listViewCharges" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #373737;" VBox.vgrow="ALWAYS" />
                </children></VBox>
          </children>
       </HBox>
@@ -218,7 +218,7 @@
                <children>
                   <Button fx:id="editProfile" mnemonicParsing="false" style="-fx-background-color: #393939;" text="ProfileName" textFill="WHITE">
                      <graphic>
-                        <ImageView fitHeight="65.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="pImageSecond" fitHeight="65.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/profile.png" />
                            </image>
@@ -338,7 +338,7 @@
                                  <children>
                                     <HBox alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="377.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Category:">
+                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Category:">
                                              <font>
                                                 <Font name="Ebrima Bold" size="16.0" />
                                              </font>
@@ -375,7 +375,7 @@
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <VBox fx:id="vBoxNewCategory" prefHeight="200.0" prefWidth="100.0" visible="false" HBox.hgrow="ALWAYS">
+                                    <VBox fx:id="vBoxNewCategory" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                                        <children>
                                           <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="New category">
                                              <font>
@@ -385,17 +385,29 @@
                                                 <Insets top="20.0" />
                                              </VBox.margin>
                                           </Text>
-                                          <TextField fx:id="nombreCat" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="300.0" promptText="Name" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                             <cursor>
-                                                <Cursor fx:constant="TEXT" />
-                                             </cursor>
+                                          <HBox maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0">
+                                             <children>
+                                                <TextField fx:id="nombreCat" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="300.0" promptText="Name" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                   <font>
+                                                      <Font name="System Italic" size="16.0" />
+                                                   </font>
+                                                </TextField>
+                                                <Label text="*" textFill="#ca0505">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets left="3.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                             </children>
                                              <VBox.margin>
                                                 <Insets top="10.0" />
                                              </VBox.margin>
-                                             <font>
-                                                <Font name="System Italic" size="16.0" />
-                                             </font>
-                                          </TextField>
+                                          </HBox>
                                           <TextArea fx:id="descCat" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="80.0" prefWidth="300.0" promptText="Description" style="-fx-background-color: white;" wrapText="true">
                                              <font>
                                                 <Font name="System Italic" size="16.0" />
@@ -424,7 +436,7 @@
                                                       </Button>
                                                    </children>
                                                 </HBox>
-                                                <Button fx:id="cCancel" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#closeWindow" style="-fx-background-color: #a30000; -fx-background-radius: 10;" text="Cancel" textFill="WHITE">
+                                                <Button fx:id="cCancel" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #a30000; -fx-background-radius: 10;" text="Cancel" textFill="WHITE">
                                                    <font>
                                                       <Font name="Ebrima Bold" size="14.0" />
                                                    </font>
@@ -451,7 +463,7 @@
                                  </children></HBox>
                               <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="68.0" prefWidth="597.0">
                                  <children>
-                                    <Button fx:id="cAdd" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#NewCategoryButtonAction" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="New Category" textFill="WHITE">
+                                    <Button fx:id="cAdd" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="New Category" textFill="WHITE">
                                        <font>
                                           <Font name="Ebrima Bold" size="14.0" />
                                        </font>
@@ -517,7 +529,7 @@
                      <children>
                         <VBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="139.0" prefWidth="597.0">
                            <children>
-                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #303030;">
+                              <Button fx:id="pImageButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #303030;">
                                  <graphic>
                                     <ImageView fx:id="pImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -646,7 +658,7 @@
                         </Button>
                         <StackPane maxWidth="-Infinity" prefHeight="68.0" prefWidth="140.0">
                            <children>
-                              <Button fx:id="pEdit" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#NewCategoryButtonAction" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Edit" textFill="WHITE">
+                              <Button fx:id="pEdit" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Edit" textFill="WHITE">
                                  <font>
                                     <Font name="Ebrima Bold" size="14.0" />
                                  </font>
@@ -654,7 +666,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <Button fx:id="pCancel" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#NewCategoryButtonAction" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Cancel" textFill="WHITE" visible="false">
+                              <Button fx:id="pCancel" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Cancel" textFill="WHITE" visible="false">
                                  <font>
                                     <Font name="Ebrima Bold" size="14.0" />
                                  </font>
@@ -791,7 +803,7 @@
                                  <children>
                                     <HBox alignment="BOTTOM_LEFT" prefHeight="48.0" prefWidth="143.0">
                                        <children>
-                                          <MenuButton fx:id="aCategory" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="31.0" prefWidth="113.0" style="-fx-background-color: #202020; -fx-background-radius: 10; -fx-border-color: #a20000; -fx-border-radius: 10;" text="Category" textFill="#bcbcbc">
+                                          <MenuButton fx:id="aCategory" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="31.0" prefWidth="120.0" style="-fx-background-color: #202020; -fx-background-radius: 10; -fx-border-color: #a20000; -fx-border-radius: 10;" text="Category" textFill="#bcbcbc">
                                              <font>
                                                 <Font name="Ebrima Bold" size="16.0" />
                                              </font>
@@ -839,7 +851,7 @@
                                     <Insets top="10.0" />
                                  </VBox.margin>
                                  <children>
-                                    <Label fx:id="aErrorPrice" text="Price not valid" textFill="#a20000" visible="false" />
+                                    <Label fx:id="aErrorPrice" text="Price not valid" textFill="#ca0505" visible="false" />
                                     <Label fx:id="aExpAdded" text="Expense added" textFill="#a4a4a4" visible="false" />
                                  </children>
                               </StackPane>
@@ -852,7 +864,7 @@
                   </VBox>
                   <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="68.0" prefWidth="597.0">
                      <children>
-                        <Button fx:id="aAdd" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#NewCategoryButtonAction" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Confirm" textFill="WHITE">
+                        <Button fx:id="aAdd" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Confirm" textFill="WHITE">
                            <font>
                               <Font name="Ebrima Bold" size="14.0" />
                            </font>

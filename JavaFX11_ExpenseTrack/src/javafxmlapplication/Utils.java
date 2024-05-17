@@ -7,6 +7,8 @@ package javafxmlapplication;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 
 /**
  *
@@ -56,6 +58,12 @@ public class Utils {
         Matcher matcher = pattern.matcher(password); 
         return matcher.matches();
     
+    }
+    
+    public static void circularCutout(ImageView imageView) {
+        double radius = Math.min(imageView.getFitWidth(), imageView.getFitHeight()) / 2;
+        Circle clip = new Circle(radius, radius, radius);
+        imageView.setClip(clip);
     }
     
 }

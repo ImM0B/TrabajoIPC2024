@@ -99,7 +99,7 @@
                         </Text>
                      </children>
                      <VBox.margin>
-                        <Insets bottom="50.0" />
+                        <Insets bottom="30.0" />
                      </VBox.margin>
                   </HBox>
                   <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="664.0" prefWidth="450.0" style="-fx-background-color: #303030; -fx-background-radius: 30; -fx-border-color: #a30000; -fx-border-radius: 30; -fx-border-width: 2;">
@@ -109,21 +109,42 @@
                               <Font name="Ebrima Bold" size="36.0" />
                            </font>
                            <VBox.margin>
-                              <Insets top="50.0" />
+                              <Insets top="30.0" />
                            </VBox.margin>
                         </Text>
                         <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="80.0" prefWidth="200.0">
                            <children>
                               <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <TextField fx:id="bUsername" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Username" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                       <font>
-                                          <Font name="Calibri Italic" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                       </cursor>
-                                    </TextField>
+                                    <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="40.0" prefWidth="446.0">
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="200.0" />
+                                          <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <TextField fx:id="bUsername" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Username" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                   <font>
+                                                      <Font name="Calibri Italic" size="18.0" />
+                                                   </font>
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                </TextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="*" textFill="#ca0505">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets left="3.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
                                     <Label fx:id="iniUsername" alignment="CENTER" text="Username is already taken" textFill="#ca0505" visible="false">
                                        <VBox.margin>
                                           <Insets />
@@ -139,21 +160,42 @@
                               <Insets />
                            </opaqueInsets>
                            <VBox.margin>
-                              <Insets top="50.0" />
+                              <Insets top="30.0" />
                            </VBox.margin>
                         </HBox>
                         <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="80.0" prefWidth="200.0">
                            <children>
                               <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <TextField fx:id="bName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Name" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                       <font>
-                                          <Font name="Calibri Italic" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                       </cursor>
-                                    </TextField>
+                                    <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="40.0" prefWidth="200.0">
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="200.0" />
+                                          <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <TextField fx:id="bName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Name" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                   <font>
+                                                      <Font name="Calibri Italic" size="18.0" />
+                                                   </font>
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                </TextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="*" textFill="#ca0505">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets left="3.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -168,14 +210,18 @@
                            <children>
                               <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <TextField fx:id="bSurname" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Surname" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                       <font>
-                                          <Font name="Calibri Italic" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                       </cursor>
-                                    </TextField>
+                                    <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="40.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="bSurname" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Surname" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                             <font>
+                                                <Font name="Calibri Italic" size="18.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="TEXT" />
+                                             </cursor>
+                                          </TextField>
+                                       </children>
+                                    </HBox>
                                  </children>
                                  <HBox.margin>
                                     <Insets />
@@ -190,14 +236,35 @@
                            <children>
                               <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <TextField fx:id="bEmail" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Email" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                       <font>
-                                          <Font name="Calibri Italic" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                       </cursor>
-                                    </TextField>
+                                    <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="40.0" prefWidth="200.0">
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="200.0" />
+                                          <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <TextField fx:id="bEmail" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Email" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                   <font>
+                                                      <Font name="Calibri Italic" size="18.0" />
+                                                   </font>
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                </TextField>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="*" textFill="#ca0505">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets left="3.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
                                     <Label fx:id="iniEmail" alignment="CENTER" text="Incorrect Email" textFill="#ca0505" visible="false">
                                        <VBox.margin>
                                           <Insets />
@@ -220,14 +287,35 @@
                            <children>
                               <VBox alignment="TOP_CENTER" maxHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <PasswordField fx:id="bPassword" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Password" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                       <font>
-                                          <Font name="Calibri Italic" size="17.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                       </cursor>
-                                    </PasswordField>
+                                    <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="40.0" prefWidth="200.0">
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="200.0" />
+                                          <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <PasswordField fx:id="bPassword" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Password" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                   <font>
+                                                      <Font name="Calibri Italic" size="17.0" />
+                                                   </font>
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                </PasswordField>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="*" textFill="#ca0505">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets left="3.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
                                     <Label fx:id="iniPassword" alignment="CENTER" prefWidth="400.0" style="-fx-text-alignment: center; -fx-wrap-text: normal;" text="It must be a combination of 8 to 15 numbers or letters without spaces" textFill="#ca0505" visible="false" />
                                  </children>
                               </VBox>
@@ -235,6 +323,44 @@
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="80.0" prefWidth="200.0">
+                           <children>
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="40.0" prefWidth="200.0">
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="200.0" />
+                                          <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                             <children>
+                                                <PasswordField fx:id="bPassword2" minHeight="40.0" minWidth="275.0" prefHeight="40.0" prefWidth="275.0" promptText="Repeat Password" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                   <font>
+                                                      <Font name="Calibri Italic" size="18.0" />
+                                                   </font>
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                </PasswordField>
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="*" textFill="#ca0505">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                   <HBox.margin>
+                                                      <Insets left="3.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <Label fx:id="iniPassword2" text="Password don't match" textFill="#ca0505" visible="false" />
+                                 </children>
+                              </VBox>
+                           </children>
                         </HBox>
                         <HBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="70.0" prefWidth="446.0">
                            <children>
@@ -248,6 +374,11 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </Button>
+                                    <Label fx:id="iniRegisterError" text="Register failed, already registered?" textFill="#ca0505" visible="false">
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </Label>
                                  </children>
                               </VBox>
                            </children>
@@ -255,11 +386,6 @@
                               <Insets />
                            </VBox.margin>
                         </HBox>
-                        <Label fx:id="iniRegisterError" text="Register failed ! Already Registered?" textFill="#ca0505" visible="false">
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                        </Label>
                      </children>
                   </VBox>
                   <HBox prefHeight="10.0" prefWidth="200.0">

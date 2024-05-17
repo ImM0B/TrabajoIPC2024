@@ -25,9 +25,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -62,6 +64,7 @@ import model.Acount;
 import model.AcountDAOException;
 import model.Category;
 import model.Charge;
+
 
 /**
  * FXML Controller class
@@ -136,6 +139,8 @@ public class FXMLMainPageController implements Initializable {
     @FXML
     private ImageView pImage;
     @FXML
+    private ImageView pImageSecond;
+    @FXML
     private Text pUser;
     @FXML
     private TextField pName;
@@ -183,7 +188,8 @@ public class FXMLMainPageController implements Initializable {
     private Button aImage;
     @FXML
     private Button pImageButton;
-
+    private BooleanBinding fieldsValid;
+    private BooleanProperty textFieldsChanged = new SimpleBooleanProperty(false);
 
 
 
@@ -247,15 +253,47 @@ public class FXMLMainPageController implements Initializable {
         //----------------------------PERFIL-----------------------------         
         try {            
             pUser.setText("@" + Acount.getInstance().getLoggedUser().getNickName()); //@UsuarioActual
+            pName.setText(Acount.getInstance().getLoggedUser().getName()); 
+            pSurname.setText(Acount.getInstance().getLoggedUser().getSurname()); 
+            pEmail.setText(Acount.getInstance().getLoggedUser().getEmail()); //@UsuarioActual
+            editProfile.setText(Acount.getInstance().getLoggedUser().getNickName());
         } catch (AcountDAOException | IOException ex) {}
         
         pImageButton.setOnAction((event) -> {
             handleImageClick(event);
         });
         
+        pEdit.setOnAction((event) -> {
+            editProfile(event);
+        });
+        
+        pConfChanges.setOnAction((event) -> {
+            confirmChanges(event);
+        });
+        
+        pCancel.setOnAction((event) -> {
+            cancelProfile(event);
+        });
+        
+        fieldsValid = pName.textProperty().isNotEmpty()
+                .and(pSurname.textProperty().isNotEmpty())
+                .and(pEmail.textProperty().isNotEmpty());
+
+        pConfChanges.disableProperty().bind(fieldsValid.not());
 
 
-
+        ChangeListener<String> textFieldChangeListener = new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                textFieldsChanged.set(true);
+            }
+        };
+        
+        pName.textProperty().addListener(textFieldChangeListener);
+        pSurname.textProperty().addListener(textFieldChangeListener);
+        pEmail.textProperty().addListener(textFieldChangeListener);
+        
+        pConfChanges.disableProperty().bind(textFieldsChanged.not());
 
 
 
@@ -446,11 +484,52 @@ public class FXMLMainPageController implements Initializable {
         if (file != null) {
             Image image = new Image(file.toURI().toString());
             pImage.setImage(image);
+            pImageSecond.setImage(image);
+            Utils.circularCutout(pImage);
+            Utils.circularCutout(pImageSecond);
         } else {
             System.out.println("File selection cancelled.");
         }
-        //Utils.circularCutout(pImage);
-
+    }
+    
+    public void editProfile(ActionEvent event) {
+        pChanged.setVisible(false);
+        pEdit.setVisible(false); 
+        pCancel.setVisible(true);
+        pConfChanges.setVisible(true);
+        pName.setDisable(false);
+        pSurname.setDisable(false);
+        pEmail.setDisable(false);
+        pConfChanges.setDisable(false);
+    }
+    
+    public void cancelProfile(ActionEvent event) {
+        pCancel.setVisible(false);
+        pChanged.setVisible(false);
+        pConfChanges.setVisible(false);
+        pEdit.setVisible(true);
+        pErrorEmail.setVisible(false);
+        pName.setDisable(true);
+        pSurname.setDisable(true);
+        pEmail.setDisable(true);
+    }
+    
+    
+    public void confirmChanges(ActionEvent event) {
+        if(!Utils.checkEmail(pEmail.getText())){
+            pErrorEmail.setVisible(true);
+            pConfChanges.setDisable(true);
+        }
+        else{
+            pErrorEmail.setVisible(false);
+            pConfChanges.setVisible(false);
+            pCancel.setVisible(false);
+            pChanged.setVisible(true);
+            pEdit.setVisible(true);
+            pName.setDisable(true);
+            pSurname.setDisable(true);
+            pEmail.setDisable(true);
+        }
     }
 
 
