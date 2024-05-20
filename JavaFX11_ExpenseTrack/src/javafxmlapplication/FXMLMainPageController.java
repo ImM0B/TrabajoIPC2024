@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 import javafx.scene.control.MenuItem;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
@@ -36,11 +37,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.ImageView;
@@ -51,7 +56,9 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import model.Acount;
 import model.AcountDAOException;
 import model.Category;
@@ -207,8 +214,14 @@ public class FXMLMainPageController implements Initializable {
     private Button aImage;
     @FXML
     private Button pImageButton;
+    
+    //PROFILE
+    private String lastName;
+    private String lastSurname;
+    private String lastEmail;
     private BooleanBinding fieldsValid;
     private BooleanProperty textFieldsChanged = new SimpleBooleanProperty(false);
+    
 
 
     /**
@@ -273,12 +286,18 @@ public class FXMLMainPageController implements Initializable {
         
         
         //----------------------------PERFIL-----------------------------         
+        
         try {            
             pUser.setText("@" + Acount.getInstance().getLoggedUser().getNickName()); //@UsuarioActual
             pName.setText(Acount.getInstance().getLoggedUser().getName()); 
             pSurname.setText(Acount.getInstance().getLoggedUser().getSurname()); 
             pEmail.setText(Acount.getInstance().getLoggedUser().getEmail()); //@UsuarioActual
             editProfile.setText(Acount.getInstance().getLoggedUser().getNickName());
+            //Salvamos campos originales
+            lastName = pName.getText();
+            lastSurname = pSurname.getText();
+            lastEmail = pEmail.getText();
+            //
         } catch (AcountDAOException | IOException ex) {}
         
         pImageButton.setOnAction((event) -> {
@@ -297,13 +316,19 @@ public class FXMLMainPageController implements Initializable {
             cancelProfile(event);
         });
         
+        pLogOut.setOnAction((event) -> {
+            try {
+                logout(event);
+            } catch (IOException ex) {}
+        });
+        
         fieldsValid = pName.textProperty().isNotEmpty()
                 .and(pSurname.textProperty().isNotEmpty())
                 .and(pEmail.textProperty().isNotEmpty());
 
         pConfChanges.disableProperty().bind(fieldsValid.not());
 
-
+        //Declara el objeto de tipo listener que escucha si hay cambios en el string que se le pasa como parámetro
         ChangeListener<String> textFieldChangeListener = new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -311,11 +336,15 @@ public class FXMLMainPageController implements Initializable {
             }
         };
         
+        //Se le pasa como parámetro los 3 textfields
         pName.textProperty().addListener(textFieldChangeListener);
         pSurname.textProperty().addListener(textFieldChangeListener);
         pEmail.textProperty().addListener(textFieldChangeListener);
         
+        //Mientras no haya cambios pConfChanges está deshabilitado
         pConfChanges.disableProperty().bind(textFieldsChanged.not());
+       
+        
 
 
 
@@ -374,6 +403,7 @@ public class FXMLMainPageController implements Initializable {
 
     @FXML
     public void cancelStackPaneButtonAction(ActionEvent event) {
+        cancelProfile(null);
         closeRightStackPane();
     }
 
@@ -605,6 +635,11 @@ public class FXMLMainPageController implements Initializable {
     }
     
     public void cancelProfile(ActionEvent event) {
+        //Restablecemos antiguos campos
+        pName.setText(lastName);
+        pSurname.setText(lastSurname);
+        pEmail.setText(lastEmail);
+        //
         pCancel.setVisible(false);
         pChanged.setVisible(false);
         pConfChanges.setVisible(false);
@@ -622,6 +657,11 @@ public class FXMLMainPageController implements Initializable {
             pConfChanges.setDisable(true);
         }
         else{
+            //Salvamos nuevos campos
+            lastName = pName.getText();
+            lastSurname = pSurname.getText();
+            lastEmail = pEmail.getText();
+            //
             pErrorEmail.setVisible(false);
             pConfChanges.setVisible(false);
             pCancel.setVisible(false);
@@ -633,6 +673,21 @@ public class FXMLMainPageController implements Initializable {
         }
     }
 
+    public void logout(ActionEvent event) throws IOException{
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(yesButton, buttonTypeCancel);
+        alert.setTitle("Logout Confimation");
+        alert.setHeaderText("You are going to logout");
+        alert.setContentText("Are you sure that you want to logout?");
+        Optional<ButtonType> result = alert.showAndWait();
+        
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                //logout
+
+            } else {}
+    }
 
 
 

@@ -134,72 +134,177 @@
                      <children>
                         <VBox alignment="TOP_CENTER" prefHeight="75.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="MENU">
-                                 <font>
-                                    <Font name="Ebrima Bold" size="36.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="20.0" top="20.0" />
-                                 </VBox.margin>
-                              </Text>
-                              <HBox prefHeight="33.0" prefWidth="300.0">
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #2f2f2f;">
                                  <children>
-                                    <Button fx:id="editCategories" mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #323232;" text="Edit Categories" textFill="#b9b9b9">
+                                    <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="MENU">
                                        <font>
-                                          <Font name="Ebrima Bold" size="18.0" />
+                                          <Font name="Ebrima Bold" size="36.0" />
                                        </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Button>
+                                    </Text>
                                  </children>
                               </HBox>
-                              <HBox prefHeight="33.0" prefWidth="300.0">
+                              <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="90.0" prefWidth="300.0" style="-fx-background-color: #323232;">
                                  <children>
-                                    <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #303030;" text="Share Expenses" textFill="#b9b9b9">
-                                       <font>
-                                          <Font name="Ebrima Bold" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Button>
+                                    <VBox alignment="TOP_CENTER" prefHeight="105.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Button fx:id="editCategoriesImg" mnemonicParsing="false" prefHeight="48.0" prefWidth="344.0" style="-fx-background-color: #323232;">
+                                             <graphic>
+                                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../icons/Edit%20categories.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Button>
+                                          <Button fx:id="editCategories" mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #323232;" text="Edit Categories" textFill="#b9b9b9">
+                                             <font>
+                                                <Font name="Ebrima Bold" size="18.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                          </Button>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets top="10.0" />
+                                       </HBox.margin>
+                                    </VBox>
                                  </children>
                               </HBox>
-                              <HBox prefHeight="33.0" prefWidth="300.0">
+                              <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="90.0" prefWidth="300.0">
                                  <children>
-                                    <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #323232;" text="Discounts" textFill="#b9b9b9">
-                                       <font>
-                                          <Font name="Ebrima Bold" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Button>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Button mnemonicParsing="false" prefHeight="34.0" prefWidth="297.0" style="-fx-background-color: #303030;">
+                                             <graphic>
+                                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../icons/Share%20expenses.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                          </Button>
+                                          <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #303030;" text="Share Expenses" textFill="#b9b9b9">
+                                             <font>
+                                                <Font name="Ebrima Bold" size="18.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                          </Button>
+                                       </children>
+                                       <HBox.margin>
+                                          <Insets />
+                                       </HBox.margin>
+                                    </VBox>
                                  </children>
                               </HBox>
-                              <HBox prefHeight="33.0" prefWidth="300.0">
+                              <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="90.0" prefWidth="300.0" style="-fx-background-color: #323232;">
                                  <children>
-                                    <Button fx:id="print" mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #303030;" text="Print" textFill="#b9b9b9">
-                                       <font>
-                                          <Font name="Ebrima Bold" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Button>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Button mnemonicParsing="false" prefHeight="48.0" prefWidth="372.0" style="-fx-background-color: #323232;">
+                                             <graphic>
+                                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../icons/Discounts.png" />
+                                                   </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </ImageView>
+                                             </graphic>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                          </Button>
+                                          <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #323232;" text="Discounts" textFill="#b9b9b9">
+                                             <font>
+                                                <Font name="Ebrima Bold" size="18.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Button>
+                                       </children>
+                                    </VBox>
                                  </children>
                               </HBox>
-                              <HBox prefHeight="33.0" prefWidth="300.0">
+                              <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="90.0" prefWidth="300.0">
                                  <children>
-                                    <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #323232;" text="Settings" textFill="#b9b9b9">
-                                       <font>
-                                          <Font name="Ebrima Bold" size="18.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Button>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Button fx:id="printImg" mnemonicParsing="false" prefHeight="48.0" prefWidth="349.0" style="-fx-background-color: #303030;">
+                                             <graphic>
+                                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../icons/Print.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <VBox.margin>
+                                                <Insets top="10.0" />
+                                             </VBox.margin>
+                                          </Button>
+                                          <Button fx:id="print" mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #303030;" text="Print" textFill="#b9b9b9">
+                                             <font>
+                                                <Font name="Ebrima Bold" size="18.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                              <HBox maxHeight="-Infinity" minHeight="-Infinity" prefHeight="90.0" prefWidth="300.0" style="-fx-background-color: #323232;">
+                                 <children>
+                                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Button mnemonicParsing="false" prefHeight="48.0" prefWidth="327.0" style="-fx-background-color: #323232;">
+                                             <graphic>
+                                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../icons/Settings.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Button>
+                                          <Button mnemonicParsing="false" prefHeight="46.0" prefWidth="300.0" style="-fx-background-color: #323232;" text="Settings" textFill="#b9b9b9">
+                                             <font>
+                                                <Font name="Ebrima Bold" size="18.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Button>
+                                       </children>
+                                    </VBox>
                                  </children>
                               </HBox>
                               <HBox prefHeight="33.0" prefWidth="300.0" />
@@ -218,7 +323,7 @@
                <children>
                   <Button fx:id="editProfile" mnemonicParsing="false" style="-fx-background-color: #393939;" text="ProfileName" textFill="WHITE">
                      <graphic>
-                        <ImageView fx:id="pImageSecond" fitHeight="65.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="65.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/profile.png" />
                            </image>
@@ -375,55 +480,167 @@
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <VBox fx:id="vBoxNewCategory" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                                    <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="New category">
-                                             <font>
-                                                <Font name="Ebrima Bold" size="20.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets top="20.0" />
-                                             </VBox.margin>
-                                          </Text>
-                                          <HBox maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0">
+                                          <VBox fx:id="vBoxEditCategory" prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
                                              <children>
-                                                <TextField fx:id="nombreCat" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="300.0" promptText="Name" style="-fx-background-color: white; -fx-background-radius: 10;">
-                                                   <cursor>
-                                                      <Cursor fx:constant="TEXT" />
-                                                   </cursor>
+                                                <StackPane prefHeight="125.0" prefWidth="577.0">
+                                                   <children>
+                                                      <VBox fx:id="vBoxEditCat" prefHeight="200.0" prefWidth="577.0" visible="false">
+                                                         <children>
+                                                            <HBox maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0">
+                                                               <children>
+                                                                  <TextField fx:id="nombreCat1" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="300.0" promptText="Name" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="TEXT" />
+                                                                     </cursor>
+                                                                     <font>
+                                                                        <Font name="System Italic" size="16.0" />
+                                                                     </font>
+                                                                  </TextField>
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets />
+                                                               </VBox.margin>
+                                                            </HBox>
+                                                            <TextArea fx:id="descCat1" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="80.0" prefWidth="300.0" promptText="Description" style="-fx-background-color: white;" wrapText="true">
+                                                               <font>
+                                                                  <Font name="System Italic" size="16.0" />
+                                                               </font>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="TEXT" />
+                                                               </cursor>
+                                                               <VBox.margin>
+                                                                  <Insets top="10.0" />
+                                                               </VBox.margin>
+                                                            </TextArea>
+                                                         </children></VBox>
+                                                      <VBox fx:id="vBoxCat" prefHeight="200.0" prefWidth="577.0">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0">
+                                                               <VBox.margin>
+                                                                  <Insets />
+                                                               </VBox.margin>
+                                                               <children>
+                                                                  <Text fx:id="nameCatForEdit" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                                                                     <font>
+                                                                        <Font name="Ebrima Bold" size="19.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                               </children>
+                                                            </HBox>
+                                                            <Text fx:id="descCatForEdit" fill="#8a8a8a" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                                                               <font>
+                                                                  <Font name="System Italic" size="13.0" />
+                                                               </font>
+                                                            </Text>
+                                                         </children>
+                                                      </VBox>
+                                                   </children></StackPane>
+                                                <StackPane alignment="TOP_LEFT" maxHeight="-Infinity" prefHeight="28.0" prefWidth="200.0">
+                                                   <children>
+                                                      <HBox fx:id="cCatEdit" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="301.0">
+                                                         <children>
+                                                            <Button fx:id="cEdit" mnemonicParsing="false" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Edit" textFill="WHITE">
+                                                               <font>
+                                                                  <Font name="Ebrima Bold" size="14.0" />
+                                                               </font>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                               <HBox.margin>
+                                                                  <Insets />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                      <HBox fx:id="cCatConfirmChanges" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="301.0" visible="false">
+                                                         <children>
+                                                            <Button fx:id="cEdit1" mnemonicParsing="false" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Confirm changes" textFill="WHITE">
+                                                               <font>
+                                                                  <Font name="Ebrima Bold" size="14.0" />
+                                                               </font>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                               <HBox.margin>
+                                                                  <Insets />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="10.0" />
+                                                   </VBox.margin>
+                                                </StackPane>
+                                             </children>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding>
+                                          </VBox>
+                                          <VBox fx:id="vBoxNewCategory" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="238.0" prefWidth="597.0">
+                                             <children>
+                                                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="New category">
+                                                   <font>
+                                                      <Font name="Ebrima Bold" size="20.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets top="20.0" />
+                                                   </VBox.margin>
+                                                </Text>
+                                                <HBox maxHeight="-Infinity" prefHeight="35.0" prefWidth="200.0">
+                                                   <children>
+                                                      <TextField fx:id="nombreCat" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="35.0" prefWidth="300.0" promptText="Name" style="-fx-background-color: white; -fx-background-radius: 10;">
+                                                         <cursor>
+                                                            <Cursor fx:constant="TEXT" />
+                                                         </cursor>
+                                                         <font>
+                                                            <Font name="System Italic" size="16.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label text="*" textFill="#ca0505">
+                                                         <font>
+                                                            <Font size="15.0" />
+                                                         </font>
+                                                         <HBox.margin>
+                                                            <Insets left="3.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets top="10.0" />
+                                                   </VBox.margin>
+                                                </HBox>
+                                                <TextArea fx:id="descCat" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="80.0" prefWidth="300.0" promptText="Description" style="-fx-background-color: white;" wrapText="true">
                                                    <font>
                                                       <Font name="System Italic" size="16.0" />
                                                    </font>
-                                                </TextField>
-                                                <Label text="*" textFill="#ca0505">
-                                                   <font>
-                                                      <Font size="15.0" />
-                                                   </font>
-                                                   <HBox.margin>
-                                                      <Insets left="3.0" />
-                                                   </HBox.margin>
-                                                </Label>
-                                             </children>
-                                             <VBox.margin>
-                                                <Insets top="10.0" />
-                                             </VBox.margin>
-                                          </HBox>
-                                          <TextArea fx:id="descCat" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="80.0" prefWidth="300.0" promptText="Description" style="-fx-background-color: white;" wrapText="true">
-                                             <font>
-                                                <Font name="System Italic" size="16.0" />
-                                             </font>
-                                             <cursor>
-                                                <Cursor fx:constant="TEXT" />
-                                             </cursor>
-                                             <VBox.margin>
-                                                <Insets top="10.0" />
-                                             </VBox.margin>
-                                          </TextArea>
-                                          <HBox maxWidth="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="301.0">
-                                             <children>
-                                                <HBox prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                                   <cursor>
+                                                      <Cursor fx:constant="TEXT" />
+                                                   </cursor>
+                                                   <VBox.margin>
+                                                      <Insets top="10.0" />
+                                                   </VBox.margin>
+                                                </TextArea>
+                                                <HBox maxWidth="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="301.0">
                                                    <children>
-                                                      <Button fx:id="cAdd1" mnemonicParsing="false" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Add" textFill="WHITE">
+                                                      <HBox prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Button fx:id="cAdd1" mnemonicParsing="false" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="Add" textFill="WHITE">
+                                                               <font>
+                                                                  <Font name="Ebrima Bold" size="14.0" />
+                                                               </font>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                               <HBox.margin>
+                                                                  <Insets />
+                                                               </HBox.margin>
+                                                            </Button>
+                                                         </children>
+                                                      </HBox>
+                                                      <Button fx:id="cCancel" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #a30000; -fx-background-radius: 10;" text="Cancel" textFill="WHITE">
                                                          <font>
                                                             <Font name="Ebrima Bold" size="14.0" />
                                                          </font>
@@ -431,37 +648,23 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                          <HBox.margin>
-                                                            <Insets />
+                                                            <Insets left="20.0" />
                                                          </HBox.margin>
                                                       </Button>
                                                    </children>
+                                                   <VBox.margin>
+                                                      <Insets bottom="20.0" top="10.0" />
+                                                   </VBox.margin>
                                                 </HBox>
-                                                <Button fx:id="cCancel" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #a30000; -fx-background-radius: 10;" text="Cancel" textFill="WHITE">
-                                                   <font>
-                                                      <Font name="Ebrima Bold" size="14.0" />
-                                                   </font>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                   <HBox.margin>
-                                                      <Insets left="20.0" />
-                                                   </HBox.margin>
-                                                </Button>
                                              </children>
-                                             <VBox.margin>
-                                                <Insets top="10.0" />
-                                             </VBox.margin>
-                                          </HBox>
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding>
+                                          </VBox>
                                        </children>
-                                       <HBox.margin>
-                                          <Insets />
-                                       </HBox.margin>
-                                       <padding>
-                                          <Insets left="20.0" />
-                                       </padding>
                                     </VBox>
                                  </children></HBox>
-                              <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="68.0" prefWidth="597.0">
+                              <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="68.0" prefWidth="597.0" style="-fx-background-color: #292929;">
                                  <children>
                                     <Button fx:id="cAdd" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #454545; -fx-background-radius: 10;" text="New Category" textFill="WHITE">
                                        <font>
@@ -537,6 +740,9 @@
                                        </image>
                                     </ImageView>
                                  </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </Button>
                               <Text fx:id="pUser" fill="#656565" strokeType="OUTSIDE" strokeWidth="0.0" text="\@Username">
                                  <font>
@@ -676,7 +882,7 @@
                               </Button>
                            </children>
                         </StackPane>
-                        <Button fx:id="pLogOut" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #a20000; -fx-background-radius: 10;" text="Log Out" textFill="WHITE">
+                        <Button fx:id="pLogOut" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#logout" prefHeight="28.0" prefWidth="120.0" style="-fx-background-color: #a20000; -fx-background-radius: 10;" text="Log Out" textFill="WHITE">
                            <font>
                               <Font name="Ebrima Bold" size="14.0" />
                            </font>
