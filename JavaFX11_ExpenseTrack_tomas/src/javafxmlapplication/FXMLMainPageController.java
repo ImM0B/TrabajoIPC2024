@@ -432,7 +432,16 @@ public class FXMLMainPageController implements Initializable {
     
     
     //MÉTODO PARA GENERAR UN PDF CON LA INFORMACIÓN
-    private void generatePDFReport() throws IOException {                   
+    private void generatePDFReport() throws IOException {
+
+        //NO QUITAR LA ALERTA. ES PARA VER HASTA DONDE LLEGA EL CODIGO Y SABER DONDE FALLA
+        Alert informacionPersonal = new Alert(Alert.AlertType.INFORMATION);
+            informacionPersonal.setTitle("About");
+            informacionPersonal.setHeaderText("Raúl\nloquesea");
+            /*informacionPersonal.setContentText("¿Seguro que quieres salir de la aplicación?");*/ //Por si quiero un texto al lado del botón
+            Optional<ButtonType> aceptar = informacionPersonal.showAndWait();
+
+        
         PDDocument document = new PDDocument(); //Creamos documento pdf
         PDPage page = new PDPage(PDRectangle.A6); //Creamos un pagina en blanco
         document.addPage(page); //Añadimos pagina al pdf
