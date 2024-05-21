@@ -43,6 +43,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -56,6 +57,11 @@ import model.Acount;
 import model.AcountDAOException;
 import model.Category;
 import model.Charge;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 
 /**
@@ -84,21 +90,15 @@ public class FXMLMainPageController implements Initializable {
     @FXML
     private Button editCategories;
     @FXML
-    private Button print;
-    @FXML
     private Button editProfile;
     @FXML
     private Button editCategoriesImg;
-    @FXML
-    private Button printImg;
 
     //GASTOS
     @FXML
     private CheckBox selectAll;
     @FXML
     private Button editAdder;
-    @FXML
-    private TableView<Charge> tableView;
 
     private ObservableList<Charge> charges = FXCollections.observableArrayList();
 
@@ -213,6 +213,21 @@ public class FXMLMainPageController implements Initializable {
     private BooleanProperty textFieldsChanged = new SimpleBooleanProperty(false);
     
     
+    //ELEMENTOS GASTOS E IMPRESIÓN
+    @FXML
+    private Button bImagPrint;
+    @FXML
+    private Button bPrint;
+    @FXML
+    private TableView<Charge> tablaGastos;
+    
+    private ObservableList <Charge> gastos;
+    @FXML
+    private TableColumn<Charge, String> columNombre;
+    @FXML
+    private TableColumn<Charge, String> columnCategoria;
+    @FXML
+    private TableColumn<Charge, LocalDate> columnFecha;
 
 
     /**
@@ -222,10 +237,24 @@ public class FXMLMainPageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        //NO TOCAR ESTO. SE UTILIZA PARA ASOCIAR CADA COLUMNA A UN ATRIBUTO DEL OBJETO CATEGORÍA. DESPUÉS SERÁ LAS REFERNCIAS QUE TOME PARA IMPRIMIR LA LISTA
+        //Asocio las columnas de la Tabla de gastos a variables del objeto Charge (name, category, date, ect...)
+        columNombre.setCellValueFactory(new PropertyValueFactory<>("name"));
+        columnCategoria.setCellValueFactory(new PropertyValueFactory<>("category"));
+        columnFecha.setCellValueFactory(new PropertyValueFactory<>("date"));
+        /*columnCoste.setCellValueFactory(new PropertyValueFactory<>("cost"));  ESTO POR SI AÑADIMOS UNA COLUMNA PARA EL COSTE*/
+        
+        tablaGastos.setItems(gastos); 
+        
+        
+        
+        
         // Botón Cancelar cierra la ventana
         bCancel.setOnAction((event) -> {
             bCancel.getScene().getWindow().hide();
         });
+        
         // Cargar la imagen
         Image image = new Image(getClass().getResourceAsStream("../icons/bg_mainPage.png"));
 
@@ -251,7 +280,6 @@ public class FXMLMainPageController implements Initializable {
         configureCategorySelector();
 
         cAdd.setOnAction((event) -> { showNewCategoryDialog(); });
-        
         cCancel.setOnAction((event) -> { handleCancelButtonAction(event); });
         
         cNameFieldValid = nombreCat.textProperty().isNotEmpty();
@@ -350,15 +378,95 @@ public class FXMLMainPageController implements Initializable {
 
         //----------------------------GASTOS-----------------------------
 
-        
-
         selectAll.setOnAction(event -> selectAllCharges());
-
         aAdd.setOnAction(event -> addCharge());
         aCancel.setOnAction(event -> clearAdderFields());
-
+        
+        
+        
+        
+        
+        //----------------------------------IMPRIMIR-------------------------
+        bPrint.setOnAction(event -> {
+            try {
+                generatePDFReport();
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLMainPageController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        
+        
+        bImagPrint.setOnAction(event -> {
+            try {
+                generatePDFReport();
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLMainPageController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
     } //--------------------------FIN INICIALIZADOR-----------------------------
 
+    
+    
+    
+    //--------------------------------------IMPRIMIR-----------------------------------------------------------
+    public void setCharges(ObservableList<Charge> gastos) { //Asignamos los objetos de la lista observable a la real. Es decir los vinculamos para que se actualicen simultanemente
+        this.gastos = gastos;
+        tablaGastos.setItems(gastos);
+    }
+    
+    @FXML
+    private void handleBotonImprimir (ActionEvent event) throws IOException{
+        generatePDFReport();
+        //Stage stage = (Stage) bPrint.getScene().getWindow();
+        //stage.close();
+    }
+
+    @FXML
+    private void handleBotonImprimirIMG (ActionEvent event) throws IOException{
+        generatePDFReport();
+        //Stage stage = (Stage) bImagPrint.getScene().getWindow();
+        //stage.close();
+    }
+    
+    
+    //MÉTODO PARA GENERAR UN PDF CON LA INFORMACIÓN
+    private void generatePDFReport() throws IOException {                   
+        PDDocument document = new PDDocument(); //Creamos documento pdf
+        PDPage page = new PDPage(PDRectangle.A6); //Creamos un pagina en blanco
+        document.addPage(page); //Añadimos pagina al pdf
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page); //La pagina tendrá determinado contenido que definimos en las siguiente lineas
+        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+        contentStream.beginText(); /**/
+        contentStream.setLeading(14.5f);
+        contentStream.newLineAtOffset(20, page.getMediaBox().getHeight()-52);
+        
+        contentStream.showText("Summary of Expenses");
+        contentStream.newLine();  /**/
+        contentStream.newLine();  /**/
+        contentStream.setFont(PDType1Font.HELVETICA, 12); /**/
+
+        for (Charge charge : gastos) {    //Recorre cada objeto de la lista observable de gastos y lo muestra como contenido en el pdf
+            contentStream.showText("Name: " + charge.getName() + ", Category: " + charge.getCategory() + 
+                ", Date: " + charge.getDate() /*+ ", Cost: " + charge.getCost()*/);
+            contentStream.newLine();
+            contentStream.endText();
+        }
+       
+        contentStream.close();
+        //document.close();
+        document.save("C:\\pruebaspdfapp\\ExpenseSummary.pdf"); //Solucionar lo del guardado cuando hayan elementos en la lista para ver a que se debe
+    
+    }
+    //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    
+    
+    
+    
+    
     //CERRAR TODAS LAS PESTAÑAS DE LA DERECHA
     public void closeRightStackPane() {
         rightStackPane.setPrefWidth(0);
@@ -575,6 +683,7 @@ public class FXMLMainPageController implements Initializable {
         vBoxCatAppear();
     }
     
+       
     // Métodos Edit
     public void vBoxCatAppear() {
         vBoxEditCatDisappear();
@@ -602,7 +711,7 @@ public class FXMLMainPageController implements Initializable {
         String categoryName = cCategory.getText().trim();
         nombreCat1.setText(categoryName);
         
-        String categoryDesc = categoryDescriptions.get(categoryName);;
+        String categoryDesc = categoryDescriptions.get(categoryName);
         descCat1.setText(categoryDesc);
         
         cCatConfirmChanges.setVisible(true); cCatConfirmChanges.setManaged(true);
@@ -750,10 +859,6 @@ public class FXMLMainPageController implements Initializable {
 
 
 
-
-
-
-
     //------------------------------GESTIÓN GASTOS------------------------------
 
     public void addCharge(Charge charge) {
@@ -770,6 +875,7 @@ public class FXMLMainPageController implements Initializable {
             checkBox.setSelected(true);
         }
     }
+       
 
 
 }
