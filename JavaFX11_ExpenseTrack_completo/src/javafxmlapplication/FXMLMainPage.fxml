@@ -326,7 +326,7 @@
                <children>
                   <Button fx:id="editProfile" mnemonicParsing="false" style="-fx-background-color: #393939;" text="ProfileName" textFill="WHITE">
                      <graphic>
-                        <ImageView fitHeight="65.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="pImageSecond" fitHeight="65.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../icons/profile.png" />
                            </image>
@@ -942,7 +942,7 @@
                      <children>
                         <VBox prefHeight="200.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="33.0" prefWidth="577.0">
+                              <HBox maxHeight="-Infinity" prefHeight="33.0" prefWidth="577.0">
                                  <children>
                                     <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="33.0" prefWidth="107.0">
                                        <children>
@@ -961,12 +961,20 @@
                                           <Font name="System Italic" size="15.0" />
                                        </font>
                                     </TextField>
+                                    <Label text="*" textFill="#ca0505">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="3.0" />
+                                       </HBox.margin>
+                                    </Label>
                                  </children>
                                  <VBox.margin>
                                     <Insets bottom="15.0" />
                                  </VBox.margin>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="33.0" prefWidth="577.0">
+                              <HBox maxHeight="-Infinity" prefHeight="33.0" prefWidth="577.0">
                                  <children>
                                     <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="33.0" prefWidth="107.0">
                                        <children>
@@ -985,6 +993,46 @@
                                           <Font name="System Italic" size="15.0" />
                                        </font>
                                     </TextField>
+                                    <Label text="*" textFill="#ca0505">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="3.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="15.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox maxHeight="-Infinity" prefHeight="33.0" prefWidth="577.0">
+                                 <children>
+                                    <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="33.0" prefWidth="107.0">
+                                       <children>
+                                          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Units:">
+                                             <font>
+                                                <Font name="Ebrima Bold" size="17.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets right="10.0" />
+                                             </HBox.margin>
+                                          </Text>
+                                       </children>
+                                    </HBox>
+                                    <TextField fx:id="aUnits" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="33.0" prefWidth="300.0" promptText="Only Numbers" style="-fx-background-radius: 10;">
+                                       <font>
+                                          <Font name="System Italic" size="15.0" />
+                                       </font>
+                                    </TextField>
+                                    <Label text="*" textFill="#ca0505">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                       <HBox.margin>
+                                          <Insets left="3.0" />
+                                       </HBox.margin>
+                                    </Label>
                                  </children>
                                  <VBox.margin>
                                     <Insets bottom="15.0" />
@@ -1026,6 +1074,14 @@
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
                                           </MenuButton>
+                                          <Label text="*" textFill="#ca0505">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="3.0" />
+                                             </HBox.margin>
+                                          </Label>
                                        </children>
                                        <HBox.margin>
                                           <Insets left="107.0" />
@@ -1038,6 +1094,14 @@
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
                                           </DatePicker>
+                                          <Label text="*" textFill="#ca0505">
+                                             <font>
+                                                <Font size="15.0" />
+                                             </font>
+                                             <HBox.margin>
+                                                <Insets bottom="10.0" left="3.0" />
+                                             </HBox.margin>
+                                          </Label>
                                        </children>
                                     </HBox>
                                  </children>
@@ -1049,7 +1113,7 @@
                                  <children>
                                     <Button fx:id="aImage" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #252525; -fx-border-radius: 10; -fx-border-color: #a20000; -fx-background-radius: 10;">
                                        <graphic>
-                                          <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="aImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../icons/insert_pic.png" />
                                              </image>
@@ -1059,6 +1123,15 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </Button>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="21.0" prefWidth="332.0">
+                                 <children>
+                                    <Text fx:id="aImageText" fill="#8d8d8d" strokeType="OUTSIDE" strokeWidth="0.0">
+                                       <font>
+                                          <Font name="System Italic" size="12.0" />
+                                       </font>
+                                    </Text>
                                  </children>
                               </HBox>
                               <StackPane maxHeight="-Infinity" prefHeight="30.0" prefWidth="557.0">

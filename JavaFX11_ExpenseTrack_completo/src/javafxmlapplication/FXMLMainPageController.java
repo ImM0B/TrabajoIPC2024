@@ -171,6 +171,7 @@ public class FXMLMainPageController implements Initializable {
     //PERFIL
     @FXML
     private ImageView pImage;
+    @FXML
     private ImageView pImageSecond;
     @FXML
     private Text pUser;
@@ -218,13 +219,19 @@ public class FXMLMainPageController implements Initializable {
     @FXML
     private TextField aCost;
     @FXML
+    private TextField aUnits;
+    @FXML
     private TextArea aDesc;
     @FXML
     private MenuButton aCategory;
     @FXML
     private DatePicker aDate;
     @FXML
+    private ImageView aImageView;
+    @FXML
     private Button aImage;
+    @FXML
+    private Text aImageText;
     @FXML
     private Button pImageButton;
     private BooleanBinding gNameFieldValid;
@@ -262,7 +269,8 @@ public class FXMLMainPageController implements Initializable {
     @FXML
     private TableColumn<Charge, LocalDate> dateCol;
     @FXML
-    private TableColumn<?, ?> optionsCol;    
+    private TableColumn<?, ?> optionsCol;
+    
 
     /**
      * Initializes the controller class.
@@ -368,26 +376,16 @@ public class FXMLMainPageController implements Initializable {
             lastEmail = pEmail.getText();
         } catch (AcountDAOException | IOException ex) {}
         
-        pImageButton.setOnAction((event) -> {
-            handleImageClick(event);
-        });
-        
-        pEdit.setOnAction((event) -> {
-            editProfile(event);
-        });
-        
-        pConfChanges.setOnAction((event) -> {
-            confirmChangesProfile(event);
-        });
-        
-        pCancel.setOnAction((event) -> {
-            cancelProfile(event);
-        });
+        pImageButton.setOnAction((event) -> { handleImageClick(event); });
+        pEdit.setOnAction((event) -> { editProfile(event); });
+        pConfChanges.setOnAction((event) -> { confirmChangesProfile(event); });
+        pCancel.setOnAction((event) -> { cancelProfile(event); });
+        pLogOut.setOnAction((event) -> { try { logout(event); } catch (IOException ex) {} });
         
         pFieldsValid = pName.textProperty().isNotEmpty()
                 .and(pSurname.textProperty().isNotEmpty())
                 .and(pEmail.textProperty().isNotEmpty());
-
+        
         pConfChanges.disableProperty().bind(pFieldsValid.not());
 
         //Declara el objeto de tipo listener que escucha si hay cambios en el string que se le pasa como parámetro
@@ -445,6 +443,8 @@ public class FXMLMainPageController implements Initializable {
 
         aAdd.setOnAction(event -> addCharge());
         aCancel.setOnAction(event -> { clearAdderFields(); closeRightStackPane(); });
+        
+        aImage.setOnAction((event) -> handleImageClick1(event));
 
         
         // Actualizar spOpenProperty cuando cambia el valor de la pila derecha
@@ -523,6 +523,7 @@ public class FXMLMainPageController implements Initializable {
     @FXML
     public void cancelStackPaneButtonAction(ActionEvent event) {
         closeRightStackPane();
+        cancelProfile(null);
     }
 
     // Método para obtener una referencia al StackPane desde otras clases
@@ -880,7 +881,7 @@ public class FXMLMainPageController implements Initializable {
         pName.setDisable(false);
         pSurname.setDisable(false);
         pEmail.setDisable(false);
-        pConfChanges.setDisable(false);
+        pConfChanges.setDisable(false); //LA EXCEPCIÓN SE GENERA AQUÍ
     }
     
     public void cancelProfile(ActionEvent event) {
@@ -949,22 +950,47 @@ public class FXMLMainPageController implements Initializable {
     private void clearAdderFields() {
         aName.clear();
         aCost.clear();
+        aUnits.clear();
         aDesc.clear();
         aCategory.setText("Category");
         aDate.setValue(null);
+        Image image = new Image(getClass().getResourceAsStream("../icons/insert_pic.png"));
+        aImageView.setImage(image);
+        aImageText.setText("");
         aErrorPrice.setVisible(false);
         aExpAdded.setVisible(false);
+    }
+    
+    public void handleImageClick1(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Image");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        // Muestra el cuadro de diálogo de selección de archivo
+        File file = fileChooser.showOpenDialog(new Stage());
+
+        if (file != null) {
+            Image image = new Image(file.toURI().toString());
+            aImageView.setImage(image);
+            aImageText.setText(image.getUrl().substring(image.getUrl().lastIndexOf("/") + 1));
+        } else {
+            System.out.println("File selection cancelled.");
+        }
     }
 
     private void addCharge() {
         try {
             String name = aName.getText();
             String costText = aCost.getText();
+            String unitsText = aUnits.getText();
             String description = aDesc.getText();
             String categoryText = aCategory.getText(); // Nombre de la categoría (NO LA CATEGORÍA)
             LocalDate date = aDate.getValue();
+            Image image = aImageView.getImage();
 
-            if (name.isEmpty() || costText.isEmpty() || categoryText.equals("Category") || date == null) {
+            if (name.isEmpty() || costText.isEmpty() || unitsText.isEmpty() || categoryText.equals("Category") || date == null) {
                 aErrorPrice.setText("Please fill in obligatory fields");
                 aErrorPrice.setVisible(true);
                 return;
@@ -975,6 +1001,15 @@ public class FXMLMainPageController implements Initializable {
                 cost = Double.parseDouble(costText);
             } catch (NumberFormatException e) {
                 aErrorPrice.setText("Price not valid");
+                aErrorPrice.setVisible(true);
+                return;
+            }
+            
+            int units;
+            try {
+                units = Integer.parseInt(unitsText);
+            } catch (NumberFormatException e) {
+                aErrorPrice.setText("Units not valid");
                 aErrorPrice.setVisible(true);
                 return;
             }
@@ -1016,7 +1051,7 @@ public class FXMLMainPageController implements Initializable {
                 alert.showAndWait();
             } else {
                 // Agregar el nuevo cargo
-                boolean chargeAdded = currentAccount.registerCharge(name, description, cost, 1, null, date, selectedCategory);
+                boolean chargeAdded = currentAccount.registerCharge(name, description, cost, units, image, date, selectedCategory);
 
                 if (chargeAdded) {
                     List<Charge> updatedUserCharges = currentAccount.getUserCharges();
