@@ -8,6 +8,7 @@ package javafxmlapplication;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 
 /**
  *
@@ -58,9 +59,11 @@ public class Utils {
         return matcher.matches();
     
     }
-
-    static void circularCutout(ImageView pImage) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    
+    public static void circularCutout(ImageView imageView) {
+        double radius = Math.min(imageView.getFitWidth(), imageView.getFitHeight()) / 2;
+        Circle clip = new Circle(radius, radius, radius);
+        imageView.setClip(clip);
     }
     
 }
