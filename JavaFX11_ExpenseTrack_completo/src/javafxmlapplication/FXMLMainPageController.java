@@ -4,12 +4,12 @@
  */
 package javafxmlapplication;
 
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,12 +21,15 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.control.MenuItem;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -37,34 +40,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
-import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import model.Acount;
 import model.AcountDAOException;
 import model.Category;
 import model.Charge;
-
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import javafx.scene.control.TableView;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 /**
  * FXML Controller class
@@ -87,22 +83,29 @@ public class FXMLMainPageController implements Initializable {
     private boolean vBoxECOpen = false;
     private boolean vBoxProfOpen = false;
     private boolean vBoxAdderOpen = false;
+    private boolean vBoxEditorOpen = false;
+    private boolean vBoxVisualizerOpen = false;
+    
+    private BooleanProperty spOpenProperty = new SimpleBooleanProperty(false);
 
     //MENÚ
     @FXML
     private Button editCategories;
     @FXML
-    private Button print;
-    @FXML
     private Button editProfile;
-
-    //GASTOS
     @FXML
-    private CheckBox selectAll;
+    private Button editCategoriesImg;
+
     @FXML
     private Button editAdder;
     @FXML
-    private ListView<Charge> listViewCharges;
+    private Button delete;
+    @FXML
+    private Button delete1;
+    @FXML
+    private TableView<Charge> tableView;
+    @FXML
+    private HBox noChargesHBox;
 
     private ObservableList<Charge> charges = FXCollections.observableArrayList();
 
@@ -129,12 +132,37 @@ public class FXMLMainPageController implements Initializable {
     private Button cAdd1; //Add interior
     @FXML
     private Button cCancel;
-
-    private ObservableList<String> categories = FXCollections.observableArrayList();
     
     private BooleanBinding cNameFieldValid;
     private BooleanBinding cCategoryFieldInvalid;
+    
+    @FXML
+    private VBox vBoxEditCategory;
+    @FXML
+    private VBox vBoxEditCat;
+    @FXML
+    private TextField nombreCat1;
+    @FXML
+    private TextArea descCat1;
+    @FXML
+    private VBox vBoxCat;
+    @FXML
+    private Text nameCatForEdit;
+    @FXML
+    private Text descCatForEdit;
+    @FXML
+    private HBox cCatEdit;
+    @FXML
+    private Button cEdit;
+    @FXML
+    private HBox cCatConfirmChanges;
+    @FXML
+    private Button cEdit1;
+    @FXML
+    private Button cCancel1;
 
+    Map<String, String> categorias = new HashMap<>();
+    
     //PERFIL
     @FXML
     private ImageView pImage;
@@ -162,8 +190,15 @@ public class FXMLMainPageController implements Initializable {
     private Button pConfChanges;
     @FXML
     private Button pCancel;
+    
+    //PROFILE
+    private String lastName;
+    private String lastSurname;
+    private String lastEmail;
+    private BooleanBinding pFieldsValid;
+    private BooleanProperty textFieldsChanged = new SimpleBooleanProperty(false);
 
-    //AÑADIR GASTO
+    //GASTOS ADDER
     @FXML
     private VBox vBoxAdder;
     @FXML
@@ -179,19 +214,123 @@ public class FXMLMainPageController implements Initializable {
     @FXML
     private TextField aCost;
     @FXML
+    private TextField aUnits;
+    @FXML
     private TextArea aDesc;
     @FXML
     private MenuButton aCategory;
     @FXML
     private DatePicker aDate;
     @FXML
+    private ImageView aImageView;
+    @FXML
     private Button aImage;
     @FXML
+    private Text aImageText;
+    @FXML
     private Button pImageButton;
-    private BooleanBinding fieldsValid;
-    private BooleanProperty textFieldsChanged = new SimpleBooleanProperty(false);
-
-
+    private BooleanBinding gNameFieldValid;
+    private BooleanBinding gFieldsValid;
+    private BooleanProperty gTextFieldsChanged = new SimpleBooleanProperty(false);
+    @FXML
+    private TableColumn<?, ?> fillingCol;
+    
+    private boolean isUpdating = false;
+    @FXML
+    private VBox vBoxNewCategory1;
+    @FXML
+    private TextField nombreCat2;
+    @FXML
+    private TextArea descCat2;
+    @FXML
+    private Button cAdd2;
+    @FXML
+    private Button cCancel2;
+    
+    //GASTOS EDITOR Y VISUALIZADOR
+    @FXML
+    private VBox vBoxEditor;
+    @FXML
+    private Text gName;
+    @FXML
+    private Text gCost;
+    @FXML
+    private Text gUnits;
+    @FXML
+    private Text gDesc;
+    @FXML
+    private MenuButton gCategory;
+    @FXML
+    private DatePicker gDate;
+    @FXML
+    private Button gEdit;
+    @FXML
+    private TextField eName;
+    @FXML
+    private TextField eCost;
+    @FXML
+    private TextField eUnits;
+    @FXML
+    private TextArea eDesc;
+    @FXML
+    private MenuButton eCategory;
+    @FXML
+    private DatePicker eDate;
+    @FXML
+    private Button eImage;
+    @FXML
+    private ImageView eImageView;
+    @FXML
+    private Text eImageText;
+    @FXML
+    private Label eErrorPrice;
+    @FXML
+    private Label eExpEdited;
+    @FXML
+    private VBox vBoxNewCategory11;
+    @FXML
+    private TextField nombreCat3;
+    @FXML
+    private TextArea descCat3;
+    @FXML
+    private Button eAdd;
+    @FXML
+    private Button eCancel;
+    @FXML
+    private Button eConfirmChanges;
+    @FXML
+    private Button eCancel1;
+    @FXML
+    private VBox vBoxVisualizer;
+    @FXML
+    private ImageView gImage;
+    @FXML
+    private Text gImageText;
+    
+    //ELEMENTOS GASTOS E IMPRESIÓN
+    @FXML
+    private Button bImagPrint;
+    @FXML
+    private Button bPrint;
+    private TableView<Charge> tablaGastos;
+    
+    private ObservableList <Charge> gastos;
+    @FXML
+    private TableColumn<?, ?> checkCol;
+    @FXML
+    private TableColumn<Charge, String> nameCol;
+    @FXML
+    private TableColumn<Charge, String> categoryCol;
+    @FXML
+    private TableColumn<Charge, LocalDate> dateCol;
+    @FXML
+    private TableColumn<?, ?> optionsCol;
+    @FXML
+    private VBox vBoxBorder;
+    
+    
+    
+        
 
     /**
      * Initializes the controller class.
@@ -204,6 +343,7 @@ public class FXMLMainPageController implements Initializable {
         bCancel.setOnAction((event) -> {
             bCancel.getScene().getWindow().hide();
         });
+        
         // Cargar la imagen
         Image image = new Image(getClass().getResourceAsStream("../icons/bg_mainPage.png"));
 
@@ -213,19 +353,29 @@ public class FXMLMainPageController implements Initializable {
 
         // EditCategory button
         editCategories.setOnAction((event) -> { if (!vBoxECOpen) openEditCategory(); });
+        editCategoriesImg.setOnAction((event) -> { if (!vBoxECOpen) openEditCategory(); });
 
         // Profile button
         editProfile.setOnAction((event) -> { if (!vBoxProfOpen) openProfile(); });
 
         // Expense adder button
         editAdder.setOnAction((event) -> { if (!vBoxAdderOpen) openExpenseAdder(); });
+        
+        // Expense deleter button
+        delete.setOnAction(event -> { try { deleteCharge(); adjustHeightToFitContent(tableView); } catch (AcountDAOException | IOException ex) {} });
+        
+        delete1.setOnAction(event -> { try { deleteAllCharges(); adjustHeightToFitContent(tableView); } catch (AcountDAOException | IOException ex) {} });
 
-        //---------------------------CATEGORÍA----------------------------
+        //---------------------------CATEGORÍA----------------------------        
         vBoxNewCategory.setVisible(false);
         vBoxNewCategory.setManaged(false);
 
         // Configurar el selector de categorías
         configureCategorySelector();
+        
+        try { copyCategoriesToMap(); } catch (AcountDAOException | IOException ex) {}
+        
+        System.out.println(categorias);
 
         cAdd.setOnAction((event) -> { showNewCategoryDialog(); });
         
@@ -233,7 +383,7 @@ public class FXMLMainPageController implements Initializable {
         
         cNameFieldValid = nombreCat.textProperty().isNotEmpty();
         cAdd1.disableProperty().bind(cNameFieldValid.not());
-        cAdd1.setOnAction((event) -> { handleAddCategoryAction(event); });
+        cAdd1.setOnAction((event) -> { try { handleAddCategoryAction(event); } catch (AcountDAOException | IOException ex) {} });
         
         cCategoryFieldInvalid = cCategory.textProperty().isEqualTo("None");
         cDelete.disableProperty().bind(cCategoryFieldInvalid);
@@ -245,43 +395,65 @@ public class FXMLMainPageController implements Initializable {
                 .otherwise("-fx-fill: #e80000;")
         );
         
-
+        cEdit.setOnAction(event -> { vBoxEditCatAppear(); cEdit1.setDisable(true); });
         
+        cCancel1.setOnAction(event -> vBoxCatAppear());
         
+        StringProperty nombreCat1Anterior = new SimpleStringProperty("");
+        StringProperty descCat1Anterior = new SimpleStringProperty("");
+        nombreCat1.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (!newValue.equals(nombreCat1Anterior.get()) || !descCat1.getText().equals(descCat1Anterior.get())) {
+                cEdit1.setDisable(false); // Habilita el botón si hay un cambio
+            } else {
+                cEdit1.setDisable(true); // Deshabilita el botón si no hay cambios
+            }
+            nombreCat1Anterior.set(newValue); // Actualiza el valor anterior
+        });
+        descCat1.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (!newValue.equals(descCat1Anterior.get()) || !nombreCat1.getText().equals(nombreCat1Anterior.get())) {
+                cEdit1.setDisable(false); // Habilita el botón si hay un cambio
+            } else {
+                cEdit1.setDisable(true); // Deshabilita el botón si no hay cambios
+            }
+            descCat1Anterior.set(newValue); // Actualiza el valor anterior
+        });
+        
+        cEdit1.setOnAction(event -> handleModifyCategory());
+        
+        // Apartado de edición y visualización de las categorías
+        vBoxEditCategory.setVisible(false); vBoxEditCategory.setManaged(false);
+        vBoxEditCat.setVisible(false); vBoxEditCat.setManaged(false);
+        vBoxCat.setVisible(false); vBoxCat.setManaged(false);
+        cCatEdit.setVisible(false); cCatEdit.setManaged(false);
+        cCatConfirmChanges.setVisible(false); cCatConfirmChanges.setManaged(false);
         
         
         //----------------------------PERFIL-----------------------------         
-        try {            
+        try { 
             pUser.setText("@" + Acount.getInstance().getLoggedUser().getNickName()); //@UsuarioActual
             pName.setText(Acount.getInstance().getLoggedUser().getName()); 
             pSurname.setText(Acount.getInstance().getLoggedUser().getSurname()); 
             pEmail.setText(Acount.getInstance().getLoggedUser().getEmail()); //@UsuarioActual
             editProfile.setText(Acount.getInstance().getLoggedUser().getNickName());
+            //Salvamos campos originales
+            lastName = pName.getText();
+            lastSurname = pSurname.getText();
+            lastEmail = pEmail.getText();
         } catch (AcountDAOException | IOException ex) {}
         
-        pImageButton.setOnAction((event) -> {
-            handleImageClick(event);
-        });
+        pImageButton.setOnAction((event) -> { handleImageClick(event); });
+        pEdit.setOnAction((event) -> { editProfile(event); });
+        pConfChanges.setOnAction((event) -> { confirmChangesProfile(event); });
+        pCancel.setOnAction((event) -> { cancelProfile(event); });
+        pLogOut.setOnAction((event) -> { try { logout(event); } catch (IOException ex) {} catch (AcountDAOException ex) {} });
         
-        pEdit.setOnAction((event) -> {
-            editProfile(event);
-        });
-        
-        pConfChanges.setOnAction((event) -> {
-            confirmChanges(event);
-        });
-        
-        pCancel.setOnAction((event) -> {
-            cancelProfile(event);
-        });
-        
-        fieldsValid = pName.textProperty().isNotEmpty()
+        pFieldsValid = pName.textProperty().isNotEmpty()
                 .and(pSurname.textProperty().isNotEmpty())
                 .and(pEmail.textProperty().isNotEmpty());
+        
+        pConfChanges.disableProperty().bind(pFieldsValid.not());
 
-        pConfChanges.disableProperty().bind(fieldsValid.not());
-
-
+        //Declara el objeto de tipo listener que escucha si hay cambios en el string que se le pasa como parámetro
         ChangeListener<String> textFieldChangeListener = new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -289,28 +461,117 @@ public class FXMLMainPageController implements Initializable {
             }
         };
         
+        //Se le pasa como parámetro los 3 textfields
         pName.textProperty().addListener(textFieldChangeListener);
         pSurname.textProperty().addListener(textFieldChangeListener);
         pEmail.textProperty().addListener(textFieldChangeListener);
         
+        //Mientras no haya cambios pConfChanges está deshabilitado
         pConfChanges.disableProperty().bind(textFieldsChanged.not());
 
 
 
         //----------------------------GASTOS-----------------------------
-        listViewCharges.setItems(charges);
-        listViewCharges.setCellFactory(CheckBoxListCell.forListView(new Callback<Charge, ObservableValue<Boolean>>() {
-            @Override
-            public ObservableValue<Boolean> call(Charge charge) {
-                return new SimpleBooleanProperty();
+        try {
+            Acount currentAccount = Acount.getInstance();
+            List<Charge> userCharges = currentAccount.getUserCharges();
+            charges.addAll(userCharges);
+        } catch (AcountDAOException | IOException ex) {
+            System.out.println("Error loading user charges");
+        }
+        
+        setupChargeTable(tableView, nameCol, categoryCol, dateCol, charges);
+        tableView.setFixedCellSize(20);
+        adjustHeightToFitContent(tableView);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        
+        System.out.println("Charges: " + charges);
+        
+        BooleanBinding fieldsEmpty = Bindings.createBooleanBinding(() ->
+                        aName.getText().trim().isEmpty() ||
+                        aCost.getText().trim().isEmpty() ||
+                        aCategory.getText().trim().equals("Category") ||
+                        aDate.getValue() == null,
+                aName.textProperty(),
+                aCost.textProperty(),
+                aCategory.textProperty(),
+                aDate.valueProperty()
+        );
+
+        aAdd.disableProperty().bind(fieldsEmpty);
+        gNameFieldValid = nombreCat2.textProperty().isNotEmpty();
+        cAdd2.disableProperty().bind(gNameFieldValid.not());
+        cAdd2.setOnAction((event) -> { try { handleAddCategoryAction1(); } catch (AcountDAOException | IOException ex) {} });
+        cCancel2.setOnAction((event) -> { hideNewCategoryDialog1(); });
+
+        aAdd.setOnAction(event -> { addCharge(); adjustHeightToFitContent(tableView); });
+        aCancel.setOnAction(event -> { clearAdderFields(); closeRightStackPane(); });
+        
+        aImage.setOnAction((event) -> handleImageClick1(event));
+        
+        // Actualizar spOpenProperty cuando cambia el valor de la pila derecha
+        rightStackPane.widthProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.doubleValue() > 0) {
+                decreaseFillingCol();
+            } else {
+                increaseFillingCol();
             }
-        }));
-
-        selectAll.setOnAction(event -> selectAllCharges());
-
-        aAdd.setOnAction(event -> addCharge());
-        aCancel.setOnAction(event -> clearAdderFields());
-
+        });
+        
+        //VISUALIZAR GASTOS
+        tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Charge>() {
+            @Override
+            public void changed(ObservableValue<? extends Charge> observable, Charge oldValue, Charge newValue) {
+                if (newValue != null) {
+                    Charge charge = tableView.getSelectionModel().selectedItemProperty().get();
+                    gName.setText(charge.getName());
+                    gCost.setText(String.valueOf(charge.getCost()));
+                    gUnits.setText(String.valueOf(charge.getUnits()));
+                    gDesc.setText(charge.getDescription());
+                    if(gDesc.getText() == null) gDesc.setText("No description");
+                    gCategory.setDisable(true);
+                    gCategory.setText(charge.getCategory().getName());
+                    gDate.setDisable(true);
+                    gDate.setValue(charge.getDate());
+                    if(charge.getImageScan().getUrl() != null){ gImage.setImage(charge.getImageScan()); 
+                        gImageText.setText(charge.getImageScan().getUrl().substring(image.getUrl().lastIndexOf("/") + 1)); }
+                    openExpenseVisualizer();
+                }
+            }
+        });
+        
+        gEdit.setOnAction(event -> {
+            eName.setText(gName.getText());
+            eCost.setText(gCost.getText());
+            eUnits.setText(gUnits.getText());
+            if(!gDesc.getText().equals("No description")) eDesc.setText(gDesc.getText());
+            eCategory.setText(gCategory.getText());
+            gDate.setValue(gDate.getValue());
+            openExpenseEditor();
+        });
+        
+        //EDITAR GASTOS
+        
+        
+        //----------------------------IMPRIMIR---------------------------
+        bPrint.setOnAction(event -> {
+            try {
+                generatePDFReport();
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLMainPageController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        bImagPrint.setOnAction(event -> {
+            try {
+                generatePDFReport();
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLMainPageController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        
     } //--------------------------FIN INICIALIZADOR-----------------------------
 
     //CERRAR TODAS LAS PESTAÑAS DE LA DERECHA
@@ -319,10 +580,15 @@ public class FXMLMainPageController implements Initializable {
         vBoxEC.setVisible(false); vBoxEC.setManaged(false);
         vBoxProfile.setVisible(false); vBoxProfile.setManaged(false);
         vBoxAdder.setVisible(false); vBoxAdder.setManaged(false);
+        vBoxEditor.setVisible(false); vBoxEditor.setVisible(false);
+        vBoxVisualizer.setVisible(false); vBoxVisualizer.setVisible(false);
+        //vBoxBorder.setStyle("-fx-border-width: 0 0 0 0;");
         spOpen = false;
         vBoxECOpen = false;
         vBoxProfOpen = false;
         vBoxAdderOpen = false;
+        vBoxEditorOpen = false;
+        vBoxVisualizerOpen = false;
     }
 
     //ABRIR PESTAÑAS DE LA DERECHA
@@ -344,15 +610,40 @@ public class FXMLMainPageController implements Initializable {
 
     private void openExpenseAdder() {
         closeRightStackPane(); 
+        hideNewCategoryDialog1();
+        aErrorPrice.setVisible(false);
+        aExpAdded.setVisible(false);
         rightStackPane.setPrefWidth(600);
         vBoxAdder.setVisible(true); vBoxAdder.setManaged(true);
         spOpen = true;
         vBoxAdderOpen = true;
+        aCategory.setText("Category");
+        configureAdderCategorySelector();
+    }
+    
+    private void openExpenseVisualizer() {
+        closeRightStackPane();
+        rightStackPane.setPrefWidth(600);
+        vBoxVisualizer.setVisible(true); vBoxVisualizer.setVisible(true);
+        spOpen = true;
+        vBoxVisualizerOpen = true;
+        //vBoxBorder.setStyle("-fx-border-color: #a20000; -fx-border-width: 0 3 0 0;");
+    }
+    
+    private void openExpenseEditor() {
+        closeRightStackPane();
+        hideNewCategoryDialog11();
+        rightStackPane.setPrefWidth(600);
+        vBoxEditor.setVisible(true); vBoxEditor.setVisible(true);
+        //vBoxBorder.setStyle("-fx-border-color: #a20000; -fx-border-width: 0 3 0 0;");
+        spOpen = true;
+        vBoxEditorOpen = true;
     }
 
     @FXML
     public void cancelStackPaneButtonAction(ActionEvent event) {
         closeRightStackPane();
+        cancelProfile(null);
     }
 
     // Método para obtener una referencia al StackPane desde otras clases
@@ -370,20 +661,49 @@ public class FXMLMainPageController implements Initializable {
         MenuButton menuButton = (MenuButton) event.getSource();
         String selectedOption = menuButton.getText();
         cCategory.setText(selectedOption);
+        
+        if (!selectedOption.equals("New Category")) {
+            try {
+                Acount currentAccount = Acount.getInstance();
+                List<Category> userCategories = currentAccount.getUserCategories();
+                Category selectedCategory = null;
+
+                // Buscar la categoría seleccionada por nombre
+                for (Category category : userCategories) {
+                    if (category.getName().equals(selectedOption)) {
+                        selectedCategory = category;
+                        break;
+                    }
+                }
+
+                if (selectedCategory != null) {
+                    nameCatForEdit.setText(selectedCategory.getName());
+                    descCatForEdit.setText(selectedCategory.getDescription());
+                    vBoxCatAppear();
+                }
+            } catch (AcountDAOException | IOException ex) {}
+        }
     }
 
     private void configureCategorySelector() {
         // Limpiar las opciones actuales del selector
         sCategory.getItems().clear();
 
-        // Crear una opción para cada categoría existente
-        for (String category : categories) {
-            MenuItem menuItem = new MenuItem(category);
-            menuItem.setOnAction(event -> {
-                cCategory.setText(menuItem.getText());
-            });
-            sCategory.getItems().add(menuItem);
-        }
+        // Crear una opción para cada categoría existente        
+        try {
+            Acount currentAccount = Acount.getInstance();
+            List<Category> userCategories = currentAccount.getUserCategories();
+
+            for (Category category : userCategories) {
+                MenuItem item = new MenuItem(category.getName());
+                item.setOnAction(event -> {
+                    cCategory.setText(category.getName());
+                    nameCatForEdit.setText(category.getName());
+                    descCatForEdit.setText(category.getDescription());
+                });
+                sCategory.getItems().add(item);
+            }
+        } catch (AcountDAOException | IOException ex) { System.out.println("configureCateogrySelector ERROR"); }
 
         MenuItem newItem = new MenuItem("New Category");
         newItem.setOnAction(event -> showNewCategoryDialog());
@@ -391,39 +711,51 @@ public class FXMLMainPageController implements Initializable {
     }
 
     private void handleDeleteButtonAction(ActionEvent event) {
-        String categoryName = cCategory.getText();
-        if (!categoryName.equals("None")) {
+        String selectedCategoryName = cCategory.getText();
+        if (!selectedCategoryName.equals("None")) {
             // Mostrar un diálogo de confirmación antes de eliminar la categoría
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation Dialog");
             alert.setHeaderText("Delete Category");
             alert.setContentText("Are you sure you want to delete the selected category?");
             alert.initModality(Modality.APPLICATION_MODAL);
-
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            Image icon = new Image(getClass().getResourceAsStream("../icons/logo.png"));
+            stage.getIcons().add(icon);
             stage.setAlwaysOnTop(true);
             stage.toFront();
 
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     // Eliminar la categoría
-                    categories.removeIf(category -> category.equals(categoryName));
-                    configureCategorySelector(); // Actualizar el selector de categorías
-                    cCategory.setText("None"); // Restablecer el texto de categoría actual
+                    try {
+                        Acount currentAccount = Acount.getInstance();
+                        List<Category> userCategories = currentAccount.getUserCategories();
+                        Category selectedCategory = null;
+                        for (Category category : userCategories) {
+                            if (category.getName().equals(selectedCategoryName)) {
+                                selectedCategory = category;
+                                break;
+                            }
+                        }
+                        currentAccount.removeCategory(selectedCategory);
+                        cCategory.setText("None");
+                        setupChargeTable(tableView, nameCol, categoryCol, dateCol, charges);
+                        vBoxCatDisappear();
+                        configureCategorySelector();
+                    } catch (AcountDAOException | IOException ex) { System.out.println("handleDeleteButtonAction ERROR"); }
                 }
             });
         }
     }
 
     private void handleCancelButtonAction(ActionEvent event) {
-        vBoxNewCategory.setVisible(false);
-        vBoxNewCategory.setManaged(false);
+        hideNewCategoryDialog();
         nombreCat.clear();
     }
-
+    
     private void showNewCategoryDialog() {
-        vBoxNewCategory.setVisible(true);
-        vBoxNewCategory.setManaged(true);
+        vBoxNewCategory.setVisible(true); vBoxNewCategory.setManaged(true);
 
         // Configurar el campo de texto de nombre de categoría
         nombreCat.setTextFormatter(new TextFormatter<>((Change c) -> {
@@ -435,16 +767,35 @@ public class FXMLMainPageController implements Initializable {
             }
             return c;
         }));
+        
+        descCat.setText("");
 
         // Enfocar el campo de texto de nombre de categoría
         nombreCat.requestFocus();
     }
+    private void hideNewCategoryDialog() {
+        vBoxNewCategory.setVisible(false);
+        vBoxNewCategory.setManaged(false);
+    }
 
-    private void handleAddCategoryAction(ActionEvent event) {
-        String categoryName = nombreCat.getText().trim();
+    private void handleAddCategoryAction(ActionEvent event) throws AcountDAOException, IOException {
+        String name = nombreCat.getText().trim();
+        String description = descCat.getText().trim();
+        
+        Acount currentAccount = Acount.getInstance();
+        List<Category> userCategories = currentAccount.getUserCategories(); 
+        Category selectedCategory = null;
+        
+        // Buscar la categoría seleccionada por nombre
+        for (Category category : userCategories) {
+            if (category.getName().equals(name)) {
+                selectedCategory = category;
+                break;
+            }
+        }
         
         // Verificar si la categoría ya existe
-        if (categories.stream().anyMatch(category -> category.equalsIgnoreCase(categoryName))) {
+        if (selectedCategory != null) {
             // Mostrar un mensaje de error si la categoría ya existe
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -453,20 +804,173 @@ public class FXMLMainPageController implements Initializable {
             alert.initModality(Modality.APPLICATION_MODAL);
 
             Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            Image icon = new Image(getClass().getResourceAsStream("../icons/logo.png"));
+            stage.getIcons().add(icon);
             stage.setAlwaysOnTop(true);
             stage.toFront();
 
             alert.showAndWait();
         } else {
             // Agregar la nueva categoría
-            categories.add(categoryName);
-            cCategory.setText(categoryName); // Establecer la nueva categoría como la actual
-            configureCategorySelector(); // Actualizar el selector de categorías
-            handleCancelButtonAction(null); // Ocultar el VBox de nueva categoría y limpiar el campo de texto
+            try {
+                // Llamar al método registerCategory() para crear una nueva categoría
+                boolean categoryAdded = currentAccount.registerCategory(name, description);
+
+                if (categoryAdded) {
+                    // La categoría se agregó correctamente
+                    System.out.println("Categoría agregada con éxito");
+                } else {
+                    // Hubo un problema al agregar la categoría
+                    System.out.println("Error al agregar la categoría");
+                }
+                
+                cCategory.setText(name); // Establecer la nueva categoría como la actual
+                vBoxEditCatDisappear();
+                vBoxCatAppear();
+                configureCategorySelector(); // Actualizar el selector de categorías
+                handleCancelButtonAction(null); // Ocultar el VBox de nueva categoría y limpiar el campo de texto
+            } catch (AcountDAOException e) {}
         }
     }
-
     
+    private void handleModifyCategory() {        
+        try {
+            String catName1 = cCategory.getText();
+            String catName2 = nombreCat1.getText();
+            
+            Acount currentAccount = Acount.getInstance();
+            List<Category> userCategories = currentAccount.getUserCategories(); 
+            Category selectedCategory = null;
+
+            // Buscar la categoría seleccionada por nombre
+            for (Category category : userCategories) {
+                if (category.getName().equals(catName1)) {
+                    selectedCategory = category;
+                    break;
+                }
+            }
+            
+            String catDesc1 = selectedCategory.getDescription();
+            String catDesc2 = descCat1.getText();
+            
+            if(!catDesc1.equals(catDesc2)) {
+                // Actualizar la descripción de la categoría
+                selectedCategory.setDescription(catDesc2);
+            }
+
+            if(!catName1.equals(catName2)) {
+                // Actualizar el nombre de la categoría
+                selectedCategory.setName(catName2);
+
+                // Actualizar en el selector de categorías
+                for (MenuItem item : sCategory.getItems()) {
+                    if (item.getText().equals(catName1)) {
+                        item.setText(catName2);
+                        break;
+                    }
+                }
+                
+                cCategory.setText(catName2); // Actualizar en la interfaz de usuario
+            }
+            
+            configureCategorySelector();
+
+            vBoxEditCatDisappear();
+            vBoxCatAppear();
+        } catch (AcountDAOException | IOException ex) { System.out.println("handleModifyCategory ERROR"); }
+    }
+    
+    // Métodos Edit
+    public void vBoxCatAppear() {
+        try {
+            vBoxEditCatDisappear();
+            String categoryName = cCategory.getText().trim();
+            nameCatForEdit.setText(categoryName);
+            
+            Acount currentAccount = Acount.getInstance();
+            List<Category> userCategories = currentAccount.getUserCategories(); 
+            Category selectedCategory = null;
+
+            // Buscar la categoría seleccionada por nombre
+            for (Category category : userCategories) {
+                if (category.getName().equals(categoryName)) {
+                    selectedCategory = category;
+                    break;
+                }
+            }
+            
+            String categoryDesc = selectedCategory.getDescription();
+            descCatForEdit.setText(categoryDesc);
+            
+            cCatEdit.setVisible(true); cCatEdit.setManaged(true);
+            cCatConfirmChanges.setVisible(false); cCatConfirmChanges.setManaged(false);
+        
+            vBoxCat.setVisible(true); vBoxCat.setManaged(true);
+            vBoxEditCategory.setVisible(true); vBoxEditCategory.setManaged(true);
+        } catch (AcountDAOException | IOException ex) { System.out.println("vBoxCatAppear ERROR"); }
+    }
+    
+    public void vBoxCatDisappear() {
+        vBoxCat.setVisible(false); vBoxCat.setManaged(false);
+        cCatEdit.setVisible(false); cCatEdit.setManaged(false);
+    }
+    
+    public void vBoxEditCatAppear() {
+        try {
+            vBoxCatDisappear();
+            String categoryName = cCategory.getText().trim();
+            nombreCat1.setText(categoryName);
+            
+            Acount currentAccount = Acount.getInstance();
+            List<Category> userCategories = currentAccount.getUserCategories(); 
+            Category selectedCategory = null;
+
+            // Buscar la categoría seleccionada por nombre
+            for (Category category : userCategories) {
+                if (category.getName().equals(categoryName)) {
+                    selectedCategory = category;
+                    break;
+                }
+            }
+            
+            String categoryDesc = selectedCategory.getDescription();
+            descCat1.setText(categoryDesc);
+            
+            cCatConfirmChanges.setVisible(true); cCatConfirmChanges.setManaged(true);
+            cCatEdit.setVisible(false); cCatEdit.setManaged(false);
+
+            vBoxEditCategory.setVisible(true); vBoxEditCategory.setManaged(true);
+            vBoxEditCat.setVisible(true); vBoxEditCat.setManaged(true);
+        } catch (AcountDAOException | IOException ex) { System.out.println("vBoxEditCatAppear ERROR"); }
+    }
+    
+    public void vBoxEditCatDisappear() {
+        vBoxEditCat.setVisible(false); vBoxEditCat.setManaged(false);
+        cCatConfirmChanges.setVisible(false); cCatConfirmChanges.setManaged(false);
+    }
+    
+    public void vBoxCatChange() {
+        String categoryName = cCategory.getText().trim();
+        nameCatForEdit.setText(categoryName);
+        
+        String categoryDesc = descCat.getText().trim();
+        descCatForEdit.setText(categoryDesc);
+        
+        cCatEdit.setVisible(true); cCatEdit.setManaged(true);
+        cCatConfirmChanges.setVisible(false); cCatConfirmChanges.setManaged(false);
+        
+        vBoxCat.setVisible(true); vBoxCat.setManaged(true);
+        vBoxEditCategory.setVisible(true); vBoxEditCategory.setManaged(true);
+    }
+    
+    public void copyCategoriesToMap() throws AcountDAOException, IOException {
+        Acount currentAccount = Acount.getInstance();
+        List<Category> userCategories = currentAccount.getUserCategories();
+            
+        for (Category category : userCategories) {
+            categorias.put(category.getName(), category.getDescription());
+        }
+    }
     
     
     //----------------------------------PERFIL----------------------------------
@@ -500,10 +1004,15 @@ public class FXMLMainPageController implements Initializable {
         pName.setDisable(false);
         pSurname.setDisable(false);
         pEmail.setDisable(false);
-        pConfChanges.setDisable(false);
+        pConfChanges.setDisable(false); //LA EXCEPCIÓN SE GENERA AQUÍ
     }
     
     public void cancelProfile(ActionEvent event) {
+        //Restablecemos antiguos campos
+        pName.setText(lastName);
+        pSurname.setText(lastSurname);
+        pEmail.setText(lastEmail);
+        
         pCancel.setVisible(false);
         pChanged.setVisible(false);
         pConfChanges.setVisible(false);
@@ -515,12 +1024,17 @@ public class FXMLMainPageController implements Initializable {
     }
     
     
-    public void confirmChanges(ActionEvent event) {
+    public void confirmChangesProfile(ActionEvent event) {
         if(!Utils.checkEmail(pEmail.getText())){
             pErrorEmail.setVisible(true);
             pConfChanges.setDisable(true);
         }
         else{
+            //Salvamos nuevos campos
+            lastName = pName.getText();
+            lastSurname = pSurname.getText();
+            lastEmail = pEmail.getText();
+            
             pErrorEmail.setVisible(false);
             pConfChanges.setVisible(false);
             pCancel.setVisible(false);
@@ -532,85 +1046,500 @@ public class FXMLMainPageController implements Initializable {
         }
     }
 
+    public void logout(ActionEvent event) throws IOException, AcountDAOException {
+    Alert alert = new Alert(AlertType.CONFIRMATION);
+    ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+    ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+    alert.getButtonTypes().setAll(yesButton, buttonTypeCancel);
+    alert.setTitle("Logout Confirmation");
+    alert.setHeaderText("You are going to logout");
+    alert.setContentText("Are you sure that you want to logout?");
+    Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+    Image icon = new Image(getClass().getResourceAsStream("../icons/logo.png"));
+    alertStage.getIcons().add(icon);
 
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.isPresent() && result.get() == yesButton) {
+        // LogOut
+        try {
+            // Cargar la ventana del segundo proyecto
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLLogin.fxml"));
+            Parent root = loader.load();
+            // Configurar la escena
+            Scene scene = new Scene(root);
 
+            // Configurar el escenario
+            Stage stage = new Stage();
+            stage.setMaximized(true); // El tamaño de la ventana se ajusta automáticamente a la pantalla del usuario
+            stage.setResizable(false); // No se puede cambiar el tamaño de la pestaña
+            stage.initStyle(StageStyle.TRANSPARENT); // Pantalla completa (hay que añadir el botón de cerrar a mano)
+            
+            stage.getIcons().add(icon);
+            
+            stage.setScene(scene);
+            stage.show();
 
+            // Ocultar la ventana actual después de medio segundo
+            javafx.animation.Timeline timeline = new javafx.animation.Timeline(new javafx.animation.KeyFrame(Duration.seconds(0.1), evt -> {
+                // Cerrar la ventana actual
+                ((Node) event.getSource()).getScene().getWindow().hide();
+                Acount currentAccount;
+                try {
+                    currentAccount = Acount.getInstance();
+                    currentAccount.logOutUser();
+                } catch (AcountDAOException | IOException ex) {
+                    // Manejar la excepción si es necesario
+                }
+            }));
+            timeline.play(); // Iniciar la animación de retraso
+        } catch (IOException e) {}
+    }
+}
 
-
-
-
-
+    
     //-------------------------------AÑADIR GASTO-------------------------------
 
     private void clearAdderFields() {
         aName.clear();
         aCost.clear();
+        aUnits.clear();
         aDesc.clear();
-        aCategory.setText("Select Category");
+        aCategory.setText("Category");
         aDate.setValue(null);
-        aErrorPrice.setText("");
-        aExpAdded.setText("");
+        Image image = new Image(getClass().getResourceAsStream("../icons/insert_pic.png"));
+        aImageView.setImage(image);
+        aImageText.setText("");
+        aErrorPrice.setVisible(false);
+        aExpAdded.setVisible(false);
     }
+    
+    public void handleImageClick1(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Image");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
 
-    private void addCharge() {
-        String name = aName.getText();
-        String costText = aCost.getText();
-        String description = aDesc.getText();
-        String categoryText = aCategory.getText(); // You'll need to change this to get the actual selected category
-        LocalDate date = aDate.getValue();
+        // Muestra el cuadro de diálogo de selección de archivo
+        File file = fileChooser.showOpenDialog(new Stage());
 
-        if (name.isEmpty() || costText.isEmpty() || description.isEmpty() || categoryText.equals("Select Category") || date == null) {
-            aErrorPrice.setText("Please fill in all fields.");
-            return;
+        if (file != null) {
+            Image image = new Image(file.toURI().toString());
+            aImageView.setImage(image);
+            aImageText.setText(image.getUrl().substring(image.getUrl().lastIndexOf("/") + 1));
+        } else {
+            System.out.println("File selection cancelled.");
         }
+    }
+        
+    private void configureAdderCategorySelector() {
+        // Limpiar las opciones actuales del selector
+        aCategory.getItems().clear();
 
-        double cost;
+        // Crear una opción para cada categoría existente       
         try {
-            cost = Double.parseDouble(costText);
-        } catch (NumberFormatException e) {
-            aErrorPrice.setText("Invalid price.");
-            return;
-        }
+            Acount currentAccount = Acount.getInstance();
+            List<Category> userCategories = currentAccount.getUserCategories();
+            System.out.println("User categories: " + userCategories);
 
-        // Create new Charge with category as null
-        //Charge newCharge = new Charge(name, description, cost, 1, null, date, null);
+            for (Category category : userCategories) {
+                MenuItem item = new MenuItem(category.getName());
+                item.setOnAction(event -> {
+                    aCategory.setText(category.getName());
+                });
+                aCategory.getItems().add(item);
+            }
+        } catch (AcountDAOException | IOException ex) {}
 
-        // Add to the charges list
-        //addCharge(newCharge);
-
-        // Clear fields and show success message
-        clearAdderFields();
-        aExpAdded.setText("Expense added successfully!");
+        MenuItem newItem = new MenuItem("New Category");
+        newItem.setOnAction(event -> showNewCategoryDialog1());
+        aCategory.getItems().add(newItem);
     }
 
+    private void showNewCategoryDialog1() {
+        vBoxNewCategory1.setVisible(true); vBoxNewCategory1.setManaged(true);
 
+        // Configurar el campo de texto de nombre de categoría
+        nombreCat2.setTextFormatter(new TextFormatter<>((Change c) -> {
+            if (c.isAdded()) {
+                String text = c.getControlNewText();
+                if (text.length() > 20) {
+                    c.setText("");
+                }
+            }
+            return c;
+        }));
+        
+        descCat2.setText("");
 
+        // Enfocar el campo de texto de nombre de categoría
+        nombreCat2.requestFocus();
+    }
+    private void hideNewCategoryDialog1() {
+        vBoxNewCategory1.setVisible(false);
+        vBoxNewCategory1.setManaged(false);
+        nombreCat2.clear();
+    }
+    
+    private void handleAddCategoryAction1() throws AcountDAOException, IOException {
+        String name = nombreCat2.getText().trim();
+        String description = descCat2.getText().trim();
+        
+        Acount currentAccount = Acount.getInstance();
+        List<Category> userCategories = currentAccount.getUserCategories(); 
+        Category selectedCategory = null;
+        
+        // Buscar la categoría seleccionada por nombre
+        for (Category category : userCategories) {
+            if (category.getName().equals(name)) {
+                selectedCategory = category;
+                break;
+            }
+        }
+        
+        // Verificar si la categoría ya existe
+        if (selectedCategory != null) {
+            // Mostrar un mensaje de error si la categoría ya existe
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Category Already Exists");
+            alert.setContentText("A category with the same name already exists.");
+            alert.initModality(Modality.APPLICATION_MODAL);
 
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.setAlwaysOnTop(true);
+            stage.toFront();
 
+            alert.showAndWait();
+        } else {
+            // Agregar la nueva categoría
+            try {
+                // Llamar al método registerCategory() para crear una nueva categoría
+                boolean categoryAdded = currentAccount.registerCategory(name, description);
 
+                if (categoryAdded) {
+                    // La categoría se agregó correctamente
+                    System.out.println("Categoría agregada con éxito");
+                } else {
+                    // Hubo un problema al agregar la categoría
+                    System.out.println("Error al agregar la categoría");
+                }
+                configureCategorySelector(); // Actualizar el selector de categorías
+                configureAdderCategorySelector();
+                hideNewCategoryDialog1(); // Ocultar el VBox de nueva categoría y limpiar el campo de texto
+            } catch (AcountDAOException e) {}
+        }
+    }
+    
+    // Métodos para ajustar el ancho de la columna
+    private void increaseFillingCol() {
+        double actualWidth = fillingCol.getWidth();
+        double newWidth = actualWidth + 600;
 
+        // Asegúrate de que el nuevo ancho no sea negativo
+        fillingCol.setPrefWidth(Math.max(newWidth, 0));
+    }
+    
+    private void decreaseFillingCol() {
+        double actualWidth = fillingCol.getWidth();
+        double newWidth = actualWidth - 600;
 
+        // Asegúrate de que el nuevo ancho no sea negativo
+        fillingCol.setPrefWidth(Math.max(newWidth, 0));
+    }
 
+    public TableColumn<?,?> getFillingTableCol() {
+        return fillingCol;
+    }
+    
+    public void setupChargeTable(TableView<Charge> tableView, TableColumn<Charge, String> nameColumn, TableColumn<Charge, String> categoryColumn, TableColumn<Charge, LocalDate> dateColumn, ObservableList<Charge> charges) {
+        // Asigna la lista observable a la tabla
+        tableView.setItems(charges);
 
+        // Asigna las propiedades de Charge a cada columna
+        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
+        categoryColumn.setCellValueFactory(cellData -> {
+            Charge charge = cellData.getValue();
+            Category category = charge.getCategory();
+            if (category != null) {
+                return new SimpleStringProperty(category.getName());
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
+        dateColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDate()));
+    }
+
+    public void adjustHeightToFitContent(TableView<?> tableView) {
+        double contentHeight = tableView.getItems().size() * tableView.getFixedCellSize();
+        double maxHeight = 970;
+        if(contentHeight > maxHeight) tableView.setPrefHeight(maxHeight);
+        else { double totalHeight = contentHeight + 26; tableView.setPrefHeight(totalHeight); }
+        if(contentHeight == 0) noChargesHBox.setVisible(true);
+        else noChargesHBox.setVisible(false);
+        System.out.println(contentHeight);
+    }
+    
     //------------------------------GESTIÓN GASTOS------------------------------
 
-    public void addCharge(Charge charge) {
-        charges.add(charge);
-    }
+    private void addCharge() {
+        try {
+            String name = aName.getText();
+            String costText = aCost.getText();
+            String unitsText = aUnits.getText();
+            String description = aDesc.getText();
+            String categoryText = aCategory.getText(); // Nombre de la categoría (NO LA CATEGORÍA)
+            LocalDate date = aDate.getValue();
+            Image image = aImageView.getImage();
 
-    public void removeCharge(Charge charge) {
-        charges.remove(charge);
-    }
+            if (name.isEmpty() || costText.isEmpty() || unitsText.isEmpty() || categoryText.equals("Category") || date == null) {
+                aErrorPrice.setText("Please fill in obligatory fields");
+                aErrorPrice.setVisible(true);
+                return;
+            }
 
-    private void selectAllCharges() {
-        for (Charge charge : charges) {
-            CheckBox checkBox = new CheckBox();
-            checkBox.setSelected(true);
+            double cost;
+            try {
+                cost = Double.parseDouble(costText);
+            } catch (NumberFormatException e) {
+                aErrorPrice.setText("Price not valid");
+                aErrorPrice.setVisible(true);
+                return;
+            }
+            
+            int units;
+            try {
+                units = Integer.parseInt(unitsText);
+            } catch (NumberFormatException e) {
+                aErrorPrice.setText("Units not valid");
+                aErrorPrice.setVisible(true);
+                return;
+            }
+
+            Acount currentAccount = Acount.getInstance();
+            List<Charge> userCharges = currentAccount.getUserCharges();
+            Charge selectedCharge = null;
+        
+            // Buscar la categoría seleccionada por nombre
+            for (Charge charge : userCharges) {
+                if (charge.getName().equals(name)) {
+                    selectedCharge = charge;
+                    break;
+                }
+            }
+            
+            List<Category> userCategories = currentAccount.getUserCategories();
+            Category selectedCategory = null;
+            for (Category category : userCategories) {
+                if (category.getName().equals(categoryText)) {
+                    selectedCategory = category;
+                    break;
+                }
+            }
+
+            // Verificar si la categoría ya existe
+            if (selectedCharge != null) {
+                // Mostrar un mensaje de error si la categoría ya existe
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Charge Already Exists");
+                alert.setContentText("A charge with the same name already exists.");
+                alert.initModality(Modality.APPLICATION_MODAL);
+
+                Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                stage.setAlwaysOnTop(true);
+                stage.toFront();
+
+                alert.showAndWait();
+            } else {
+                // Agregar el nuevo cargo
+                boolean chargeAdded = currentAccount.registerCharge(name, description, cost, units, image, date, selectedCategory);
+
+                if (chargeAdded) {
+                    List<Charge> updatedUserCharges = currentAccount.getUserCharges();
+                    Charge newCharge = updatedUserCharges.stream().filter(charge -> charge.getName().equals(name)).findFirst().orElse(null);
+                    // Agregar el nuevo cargo a la ObservableList
+                    if (newCharge != null) {
+                        isUpdating = true;
+                        charges.add(newCharge);
+                        isUpdating = false;
+                    }
+                    System.out.println("Cargo agregado con éxito");
+                } else {
+                    // Hubo un problema al agregar la categoría
+                    System.out.println("Error al agregar el cargo");
+                }
+            }
+            
+            setupChargeTable(tableView, nameCol, categoryCol, dateCol, charges);
+            
+            //tableView.setPrefHeight(tableView.getHeight() + 30);
+            
+            // Clear fields and show success message
+            clearAdderFields();
+            aErrorPrice.setVisible(false);
+            aExpAdded.setVisible(true);
+        } catch (AcountDAOException | IOException ex) { System.out.println("addCharge ERROR"); }
+    }
+    
+    public void deleteCharge() throws AcountDAOException, IOException {
+        // Obtener los cargos seleccionados
+        ObservableList<Charge> selectedCharges = tableView.getSelectionModel().getSelectedItems();
+
+        // Verificar si hay cargos seleccionados
+        if (selectedCharges.isEmpty()) {
+            // Mostrar alerta de que no hay cargos seleccionados
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Delete Charge");
+            alert.setHeaderText("You can't delete any charge");
+            alert.setContentText("There is no charge selected for deletion.");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            Image icon = new Image(getClass().getResourceAsStream("../icons/logo.png"));
+            stage.getIcons().add(icon);
+            alert.showAndWait();
+            return;
+        }
+
+        // Mostrar alerta de confirmación
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("You are going to delete charges");
+        alert.setContentText("Are you sure you want to delete the selected charges?");
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        Image icon = new Image(getClass().getResourceAsStream("../icons/logo.png"));
+        stage.getIcons().add(icon);
+        // Esperar a que el usuario confirme o cancele la acción
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Eliminar los cargos seleccionados
+            Acount currentAccount = Acount.getInstance();
+            for (Charge charge : selectedCharges) { currentAccount.removeCharge(charge); }
+            charges.removeAll(selectedCharges);
+            setupChargeTable(tableView, nameCol, categoryCol, dateCol, charges);
         }
     }
 
-    @FXML
-    private void NewCategoryButtonAction(ActionEvent event) {
+    public void deleteAllCharges() throws AcountDAOException, IOException {
+        // Verificar si hay cargos seleccionados
+        if (tableView.getItems().isEmpty()) {
+            // Mostrar alerta de que no hay cargos seleccionados
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Delete All Charges");
+            alert.setHeaderText("You can't delete all charges");
+            alert.setContentText("There are no charges for deletion.");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            Image icon = new Image(getClass().getResourceAsStream("../icons/logo.png"));
+            stage.getIcons().add(icon);
+            alert.showAndWait();
+            return;
+        }
+
+        // Mostrar alerta de confirmación
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Deletion");
+        alert.setHeaderText("You are going to delete all the charges");
+        alert.setContentText("Are you sure you want to delete all the charges?");
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        Image icon = new Image(getClass().getResourceAsStream("../icons/logo.png"));
+        stage.getIcons().add(icon);
+        // Esperar a que el usuario confirme o cancele la acción
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Eliminar los cargos seleccionados
+            Acount currentAccount = Acount.getInstance();
+            List<Charge> userCharges = new ArrayList<>(tableView.getItems()); // Copia de la lista original
+            for (Charge charge : userCharges) { 
+                currentAccount.removeCharge(charge); 
+                charges.remove(charge); 
+            }
+            setupChargeTable(tableView, nameCol, categoryCol, dateCol, charges);
+        }
     }
 
+    //-------------------------------EDITAR GASTOS------------------------------
+    
+    private void showNewCategoryDialog11() {
+        vBoxNewCategory11.setVisible(true); vBoxNewCategory11.setManaged(true);
+
+        // Configurar el campo de texto de nombre de categoría
+        nombreCat3.setTextFormatter(new TextFormatter<>((Change c) -> {
+            if (c.isAdded()) {
+                String text = c.getControlNewText();
+                if (text.length() > 20) {
+                    c.setText("");
+                }
+            }
+            return c;
+        }));
+        
+        descCat3.setText("");
+
+        // Enfocar el campo de texto de nombre de categoría
+        nombreCat3.requestFocus();
+    }
+    private void hideNewCategoryDialog11() {
+        vBoxNewCategory11.setVisible(false);
+        vBoxNewCategory11.setManaged(false);
+        nombreCat2.clear();
+    }
+    
+    
+    //---------------------------------IMPRIMIR---------------------------------
+    public void setCharges(ObservableList<Charge> gastos) { //Asignamos los objetos de la lista observable a la real. Es decir los vinculamos para que se actualicen simultanemente
+        this.gastos = gastos;
+        tablaGastos.setItems(gastos);
+    }
+    
+    private void handleBotonImprimir (ActionEvent event) throws IOException{
+        generatePDFReport();
+        //Stage stage = (Stage) bPrint.getScene().getWindow();
+        //stage.close();
+    }
+
+    private void handleBotonImprimirIMG (ActionEvent event) throws IOException{
+        generatePDFReport();
+        //Stage stage = (Stage) bImagPrint.getScene().getWindow();
+        //stage.close();
+    }
+    
+    
+    //MÉTODO PARA GENERAR UN PDF CON LA INFORMACIÓN
+    private void generatePDFReport() throws IOException {
+
+        //NO QUITAR LA ALERTA. ES PARA VER HASTA DONDE LLEGA EL CODIGO Y SABER DONDE FALLA
+        Alert informacionPersonal = new Alert(Alert.AlertType.INFORMATION);
+            informacionPersonal.setTitle("About");
+            informacionPersonal.setHeaderText("Raúl\nloquesea");
+            /*informacionPersonal.setContentText("¿Seguro que quieres salir de la aplicación?");*/ //Por si quiero un texto al lado del botón
+            Optional<ButtonType> aceptar = informacionPersonal.showAndWait();
+
+        
+        PDDocument document = new PDDocument(); //Creamos documento pdf
+        PDPage page = new PDPage(PDRectangle.A6); //Creamos un pagina en blanco
+        document.addPage(page); //Añadimos pagina al pdf
+
+        PDPageContentStream contentStream = new PDPageContentStream(document, page); //La pagina tendrá determinado contenido que definimos en las siguiente lineas
+        contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+        contentStream.beginText(); /**/
+        contentStream.setLeading(14.5f);
+        contentStream.newLineAtOffset(20, page.getMediaBox().getHeight()-52);
+        
+        contentStream.showText("Summary of Expenses");
+        contentStream.newLine();  /**/
+        contentStream.newLine();  /**/
+        contentStream.setFont(PDType1Font.HELVETICA, 12); /**/
+
+        for (Charge charge : gastos) {    //Recorre cada objeto de la lista observable de gastos y lo muestra como contenido en el pdf
+            contentStream.showText("Name: " + charge.getName() + ", Category: " + charge.getCategory() + 
+                ", Date: " + charge.getDate() /*+ ", Cost: " + charge.getCost()*/);
+            contentStream.newLine();
+            contentStream.endText();
+        }
+       
+        contentStream.close();
+        
+        document.save("C:\\pruebaspdfapp\\ExpenseSummary.pdf"); //Solucionar lo del guardado cuando hayan elementos en la lista para ver a que se debe
+        document.close();
+
+    }
 }
