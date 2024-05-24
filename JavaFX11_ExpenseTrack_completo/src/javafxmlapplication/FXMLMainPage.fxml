@@ -732,7 +732,7 @@
                   </HBox>
                </children>
             </VBox>
-            <VBox fx:id="vBoxProfile" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: #a20000; -fx-border-width: 0 0 0 3;" visible="false">
+            <VBox fx:id="vBoxProfile" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: #a20000; -fx-border-width: 0 0 0 3;">
                <children>
                   <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelStackPaneButtonAction" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: #303030;">
                      <graphic>
@@ -768,15 +768,20 @@
                      <children>
                         <VBox alignment="TOP_CENTER" maxHeight="-Infinity" prefHeight="139.0" prefWidth="597.0">
                            <children>
-                              <Button fx:id="pImageButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #303030;">
-                                 <graphic>
-                                    <ImageView fx:id="pImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/profile.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
+                              <StackPane prefHeight="150.0" prefWidth="200.0">
+                                 <children>
+                                    <Button fx:id="pImageButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #303030;">
+                                       <graphic>
+                                          <ImageView fx:id="pImage" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../icons/profile.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </Button>
+                                    <ImageView fx:id="pPerfilImage2" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </StackPane>
                               <Text fx:id="pUser" fill="#656565" strokeType="OUTSIDE" strokeWidth="0.0" text="\@Username">
                                  <font>
                                     <Font name="Ebrima Bold" size="15.0" />
@@ -1284,7 +1289,7 @@
                   </HBox>
                </children>
             </VBox>
-            <VBox fx:id="vBoxEditor" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: #a20000; -fx-border-width: 0 0 0 3;">
+            <VBox fx:id="vBoxEditor" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: #a20000; -fx-border-width: 0 0 0 3;" visible="false">
                <children>
                   <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelStackPaneButtonAction" prefHeight="20.0" prefWidth="20.0" style="-fx-background-color: #303030;">
                      <graphic>
