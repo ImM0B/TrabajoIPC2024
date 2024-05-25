@@ -1,0 +1,64 @@
+/* Archivo: styles.css */
+
+/* Estilo para VBox */
+#vBoxVisualizer {
+    -fx-border-color: #a20000;
+    -fx-border-width: 0 0 0 3; /* Bordes solo a la izquierda */
+    -fx-padding: 10; /* Espacio interno */
+}
+
+/* Estilo para botones */
+#vBoxVisualizer .button {
+    -fx-background-color: #303030;
+    -fx-border-color: #a20000;
+    -fx-border-width: 1;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+/* Estilo para ImageView */
+#vBoxVisualizer .image-view {
+    -fx-cursor: hand;
+}
+
+/* Estilo para textos */
+#vBoxVisualizer .text {
+    -fx-fill: white;
+    -fx-font-family: "Ebrima Bold";
+}
+
+#vBoxVisualizer .text-field, #vBoxVisualizer .text-area {
+    -fx-background-color: #202020;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #7c7c7c;
+    -fx-border-color: #a20000;
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+/* Estilo para VBox margin */
+#vBoxVisualizer .vbox {
+    -fx-padding: 10;
+}
+
+/* Estilo para MenuButton */
+#vBoxVisualizer .menu-button {
+    -fx-background-color: #202020;
+    -fx-border-color: #a20000;
+    -fx-border-width: 1;
+    -fx-text-fill: #bcbcbc;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+/* Estilo para DatePicker */
+#vBoxVisualizer .date-picker {
+    -fx-background-color: #202020;
+    -fx-border-color: #a20000;
+    -fx-border-width: 1;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
